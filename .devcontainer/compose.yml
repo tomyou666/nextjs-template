@@ -1,0 +1,41 @@
+services:
+  app:
+    container_name: "app-server"
+    # Dockerfileがあるpath、dockerfile名を指示
+    build:
+      context: ../docker
+      dockerfile: Dockerfile
+    # dbコンテナが起動した後に起動するように指示
+    depends_on:
+      - db
+    volumes:
+      # devcontainerのworkspacesにマウント
+      - ..:/workspaces/app-server:cached
+    # コンテナ切断をしないように指示
+    command:
+      /bin/sh -c "while sleep 1000; do :; done"
+      /bin/bash
+  db:
+    container_name: app-db
+    # DB用のDockerfile指定
+    build:
+      context: ../docker/db
+      dockerfile: Dockerfile
+    environment:
+      POSTGRES_DB: app-postgres
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - ../docker/db/sql/:/docker-entrypoint-initdb.d
+      - app-db-data:/var/lib/postgresql/data
+    # コンテナ間の接続を可能にするためのネットワーク設定
+    networks:
+      - default
+    restart: "no"
+volumes:
+  app-db-data:
+
+networks:
+  default:

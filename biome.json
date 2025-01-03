@@ -11,6 +11,10 @@
 	},
 	"formatter": {
 		"enabled": true,
+		"ignore": [
+			".next",
+			"node_modules"
+		],
 		"indentStyle": "tab"
 	},
 	"organizeImports": {
@@ -18,13 +22,32 @@
 	},
 	"linter": {
 		"enabled": true,
+		"ignore": [
+			".next",
+			"node_modules"
+		],
 		"rules": {
-			"recommended": true
+			"recommended": true,
+			"nursery": {
+				"useSortedClasses": {
+					"level": "warn",
+					"fix": "safe",
+					"options": {
+						"functions": [
+							"clsx",
+							"cva",
+							"tw",
+							"tw.*"
+						]
+					}
+				}
+			}
 		}
 	},
 	"javascript": {
 		"formatter": {
-			"quoteStyle": "double"
+			"quoteStyle": "single",
+			"semicolons": "asNeeded"
 		}
 	}
 }

@@ -1,21 +1,53 @@
-import { Sidebar } from "@/components/sidebar"
-import { Header } from "@/components/header"
+import { AppSidebar } from '@/components/app-sidebar'
+import { Header } from '@/components/header'
+import {
+	Breadcrumb,
+	BreadcrumbItem,
+	BreadcrumbLink,
+	BreadcrumbList,
+	BreadcrumbPage,
+	BreadcrumbSeparator,
+} from '@/components/ui/breadcrumb'
+import {
+	SidebarInset,
+	SidebarProvider,
+	SidebarTrigger,
+} from '@/components/ui/sidebar'
+import { Separator } from '@radix-ui/react-separator'
 
 export default function DashboardLayout({
-  children,
+	children,
 }: {
-  children: React.ReactNode
+	children: React.ReactNode
 }) {
-  return (
-    <div className="flex h-screen overflow-hidden">
-      <Sidebar />
-      <div className="flex-1 flex flex-col overflow-hidden">
-        <Header />
-        <main className="flex-1 overflow-x-hidden overflow-y-auto bg-gray-100 dark:bg-gray-900">
-          {children}
-        </main>
-      </div>
-    </div>
-  )
+	return (
+		<SidebarProvider>
+			<AppSidebar />
+			<SidebarInset>
+				<header className="flex h-16 shrink-0 items-center gap-2 border-b px-4">
+					<SidebarTrigger className="-ml-1" />
+					<Separator orientation="vertical" className="mr-2 h-4" />
+					<Breadcrumb>
+						<BreadcrumbList>
+							<BreadcrumbItem className="hidden md:block">
+								<BreadcrumbLink href="#">
+									Building Your Application
+								</BreadcrumbLink>
+							</BreadcrumbItem>
+							<BreadcrumbSeparator className="hidden md:block" />
+							<BreadcrumbItem>
+								<BreadcrumbPage>Data Fetching</BreadcrumbPage>
+							</BreadcrumbItem>
+						</BreadcrumbList>
+					</Breadcrumb>
+				</header>
+				<div className="flex-1 flex flex-col overflow-hidden">
+					<Header />
+					<main className="flex-1 overflow-x-hidden overflow-y-auto bg-gray-100 dark:bg-gray-900">
+						{children}
+					</main>
+				</div>
+			</SidebarInset>
+		</SidebarProvider>
+	)
 }
-

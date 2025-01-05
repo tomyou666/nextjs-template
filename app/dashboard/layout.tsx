@@ -41,9 +41,9 @@ export default function DashboardLayout({
 						</BreadcrumbList>
 					</Breadcrumb>
 				</header>
-				<div className="flex-1 flex flex-col overflow-hidden">
+				<div className="flex flex-1 flex-col overflow-hidden">
 					<Header />
-					<main className="flex-1 overflow-x-hidden overflow-y-auto bg-gray-100 dark:bg-gray-900">
+					<main className="flex-1 overflow-y-auto overflow-x-hidden bg-gray-100 dark:bg-gray-900">
 						{children}
 					</main>
 				</div>

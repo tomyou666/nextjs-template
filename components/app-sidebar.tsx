@@ -46,6 +46,10 @@ const data: SidebarData = {
 			url: '#',
 			items: [
 				{
+					title: 'state',
+					url: '/dashboard/state',
+				},
+				{
 					title: 'Dashboard',
 					url: '/dashboard',
 				},

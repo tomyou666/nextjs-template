@@ -1,6 +1,5 @@
 'use client'
 
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 import {
 	Dialog,
@@ -18,6 +17,7 @@ import {
 	DropdownMenuSeparator,
 	DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
+import { User } from 'lucide-react'
 import { signOut } from 'next-auth/react'
 import { useState } from 'react'
 
@@ -29,10 +29,9 @@ export function UserNav() {
 			<DropdownMenu>
 				<DropdownMenuTrigger asChild>
 					<Button variant="ghost" className="relative h-8 w-8 rounded-full">
-						<Avatar className="h-8 w-8">
-							<AvatarImage src="/avatars/01.png" alt="@username" />
-							<AvatarFallback>SC</AvatarFallback>
-						</Avatar>
+						<div className="flex h-8 w-8 items-center justify-center rounded-full border">
+							<User className="h-4 w-4" />
+						</div>
 					</Button>
 				</DropdownMenuTrigger>
 				<DropdownMenuContent className="w-56" align="end" forceMount>

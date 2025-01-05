@@ -1,4 +1,6 @@
+import { logger } from '@/lib/logger'
 import { prisma } from '@/lib/prisma'
+import { formSchema } from '@/lib/schemas'
 import { PrismaAdapter } from '@auth/prisma-adapter'
 import type { NextAuthOptions } from 'next-auth'
 import NextAuth from 'next-auth/next'
@@ -9,7 +11,7 @@ const authOptions: NextAuthOptions = {
 	adapter: PrismaAdapter(prisma),
 	session: {
 		strategy: 'jwt',
-		maxAge: 10, // 10sec
+		maxAge: 60 * 60 * 24 * 30, // 1month
 	},
 	providers: [
 		GithubProvider({
@@ -25,13 +27,16 @@ const authOptions: NextAuthOptions = {
 				password: { label: 'Password', type: 'password' },
 			},
 			async authorize(credentials) {
-				if (!credentials?.email || !credentials?.password) {
+				try {
+					formSchema.parse(credentials)
+				} catch (error) {
+					logger.error(error)
 					return null
 				}
 
 				const user = await prisma.user.findUnique({
 					where: {
-						email: credentials.email,
+						email: credentials?.email,
 					},
 				})
 

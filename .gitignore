@@ -4,8 +4,8 @@
 /node_modules
 /.pnp
 .pnp.*
-.yarn/*
-.pnpm-store/*
+/.yarn
+/.pnpm-store
 !.yarn/patches
 !.yarn/plugins
 !.yarn/releases
@@ -45,3 +45,6 @@ node_modules/
 /playwright-report/
 /blob-report/
 /playwright/.cache/
+
+# etc
+/logs

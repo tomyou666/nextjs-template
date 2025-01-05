@@ -1,4 +1,5 @@
 import withAuth, { type NextRequestWithAuth } from 'next-auth/middleware'
+import { logger } from './lib/logger'
 // export { default } from "next-auth/middleware"
 
 export const config = {
@@ -11,6 +12,6 @@ export const config = {
 export default withAuth(
 	// `withAuth` augments your `Request` with the user's token.
 	function middleware(req: NextRequestWithAuth) {
-		console.log(req.nextauth.token)
+		logger.debug(req)
 	},
 )

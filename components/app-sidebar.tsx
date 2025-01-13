@@ -54,6 +54,10 @@ const data: SidebarData = {
 					url: '/dashboard',
 				},
 				{
+					title: 'レンダリング',
+					url: '/dashboard/rendering',
+				},
+				{
 					title: 'Forms',
 					url: '/dashboard/forms',
 				},

@@ -3,7 +3,7 @@ import { logger } from './lib/logger'
 // export { default } from "next-auth/middleware"
 
 export const config = {
-	matcher: ['/((?!api|_next/static|_next/image|favicon.ico|login|$).*)'],
+	matcher: ['/((?!api|_next/static|_next/image|favicon.ico|login|signup|$).*)'],
 }
 // export const config = {
 //   matcher: ["/dashboard/:path* "],

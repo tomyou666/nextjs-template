@@ -3,7 +3,6 @@
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
-import { logger } from '@/lib/logger'
 import { formSchema } from '@/lib/schemas'
 import { cn } from '@/lib/utils'
 import type { SubmissionResult } from '@conform-to/dom'
@@ -11,6 +10,7 @@ import { getInputProps, useForm } from '@conform-to/react'
 import { parseWithZod } from '@conform-to/zod'
 import { signIn } from 'next-auth/react'
 import Form from 'next/form'
+import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useActionState } from 'react'
 
@@ -21,14 +21,10 @@ export function LoginForm({
 }: React.ComponentPropsWithoutRef<'div'> & {
 	callbackUrl?: string
 }) {
-	logger.warn('localhost:state')
 	const [result, formAction, isPending] = useActionState(submitLoginForm, null)
 	const router = useRouter()
 
-	const successResult = result as unknown as {
-		status: string
-		message: string
-	} | null
+	const successResult = result as unknown as ApiResponse<null> | null
 	const lastResult = result as unknown as SubmissionResult<string[]> | null
 	const [form, fields] = useForm({
 		lastResult,
@@ -49,14 +45,17 @@ export function LoginForm({
 		if (result?.error) {
 			return {
 				status: 'error',
-				message: 'メールアドレスまたはパスワードが間違っています。',
-			}
+				message: result.error,
+			} as ApiResponse<null>
 		}
 
 		router.push(callbackUrl || '/dashboard')
 		router.refresh()
 
-		return { status: 'success', message: 'ログインしました' }
+		return {
+			status: 'success',
+			message: 'ログインしました',
+		} as ApiResponse<null>
 	}
 
 	return (
@@ -110,12 +109,12 @@ export function LoginForm({
 								<div className="grid gap-2">
 									<div className="flex items-center">
 										<label htmlFor={fields.password.id}>パスワード</label>
-										<a
+										<Link
 											href="#"
 											className="ml-auto text-sm underline-offset-4 hover:underline"
 										>
 											Forgot your password?
-										</a>
+										</Link>
 									</div>
 									<Input
 										{...getInputProps(fields.password, { type: 'password' })}
@@ -132,9 +131,9 @@ export function LoginForm({
 						</Form>
 						<div className="text-center text-sm">
 							アカウントがない場合{' '}
-							<a href="#" className="underline underline-offset-4">
+							<Link href="/signup" className="underline underline-offset-4">
 								サインアップ
-							</a>
+							</Link>
 						</div>
 					</div>
 					{lastResult?.status === 'success' ? (

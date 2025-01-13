@@ -1,12 +1,9 @@
-import { authOptions } from '@/app/api/auth/[...nextauth]/route'
 import { getServerSession } from 'next-auth/next'
 import type { NextRequest, NextResponse } from 'next/server'
+import { authOptions } from './auth'
 
 // APIハンドラー関数の型定義
-type HandlerFunction = (
-	req: NextRequest,
-	res: NextResponse,
-) => Promise<Response>
+type HandlerFunction<T> = (req: NextRequest) => Promise<NextResponse<T>>
 
 /**
  * API認証用のラッパー関数
@@ -30,8 +27,8 @@ type HandlerFunction = (
  *   return Response.json({ status: "success" })
  * })
  */
-export function auth(handler: HandlerFunction): HandlerFunction {
-	return async (req: NextRequest, res: NextResponse) => {
+export function auth<T>(handler: HandlerFunction<T>): HandlerFunction<T> {
+	return (async (req: NextRequest) => {
 		// NextAuthのセッション情報を取得
 		const session = await getServerSession(authOptions)
 
@@ -43,6 +40,6 @@ export function auth(handler: HandlerFunction): HandlerFunction {
 		}
 
 		// 認証済みの場合、元のハンドラーを実行
-		return handler(req, res)
-	}
+		return await handler(req)
+	}) as HandlerFunction<T>
 }

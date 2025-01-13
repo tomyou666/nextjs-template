@@ -1,6 +1,5 @@
 'use client'
 
-import { submitPasswordForm } from '@/app/actions'
 import { Button } from '@/components/ui/button'
 import {
 	Card,
@@ -10,6 +9,7 @@ import {
 	CardTitle,
 } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
+import { submitPasswordForm } from '@/lib/actions'
 import { passwordSchema } from '@/lib/schemas'
 import type { SubmissionResult } from '@conform-to/dom'
 import { getInputProps, useForm } from '@conform-to/react'

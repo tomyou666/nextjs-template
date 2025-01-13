@@ -36,10 +36,13 @@ export function SignupForm({
 	async function submitSignupForm(prevState: unknown, formData: FormData) {
 		try {
 			// ここでサインアップのAPIを呼び出す
-			const response = await fetch('/api/auth/signup', {
-				method: 'POST',
-				body: formData,
-			})
+			const response = await fetch(
+				`${process.env.NEXT_PUBLIC_API_URL}/api/signup`,
+				{
+					method: 'POST',
+					body: formData,
+				},
+			)
 
 			if (!response.ok) {
 				const data = await response.json()

@@ -1,6 +1,5 @@
 'use client'
 
-import { submitSelectForm } from '@/app/actions'
 import { Button } from '@/components/ui/button'
 import {
 	Card,
@@ -16,6 +15,7 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from '@/components/ui/select'
+import { submitSelectForm } from '@/lib/actions'
 import { selectSchema } from '@/lib/schemas'
 import type { SubmissionResult } from '@conform-to/dom'
 import { getSelectProps, useForm } from '@conform-to/react'
@@ -56,7 +56,7 @@ export function SelectSample() {
 						<div>
 							<label
 								htmlFor={fields.fruit.id}
-								className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+								className="font-medium text-sm leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
 							>
 								Fruit
 							</label>
@@ -70,7 +70,7 @@ export function SelectSample() {
 									<SelectItem value="orange">Orange</SelectItem>
 								</SelectContent>
 							</Select>
-							<div className="text-sm text-destructive mt-2">
+							<div className="mt-2 text-destructive text-sm">
 								{fields.fruit.errors}
 							</div>
 						</div>

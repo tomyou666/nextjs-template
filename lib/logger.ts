@@ -1,7 +1,7 @@
 import pino from 'pino'
 
 const logLevel = process.env.NODE_ENV === 'production' ? 'debug' : 'trace'
-const frontendOrigin = process.env.NEXT_PUBLIC_FRONTEND_ORIGIN
+const frontendOrigin = process.env.NEXT_PUBLIC_API_URL
 const logUrl = `${frontendOrigin}/api/log`
 
 // pino-prettyの設定です。

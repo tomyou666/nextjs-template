@@ -1,6 +1,5 @@
 'use client'
 
-import { submitCheckboxForm } from '@/app/actions'
 import { Button } from '@/components/ui/button'
 import {
 	Card,
@@ -10,6 +9,7 @@ import {
 	CardTitle,
 } from '@/components/ui/card'
 import { Checkbox } from '@/components/ui/checkbox'
+import { submitCheckboxForm } from '@/lib/actions'
 import { checkboxSchema } from '@/lib/schemas'
 import type { SubmissionResult } from '@conform-to/dom'
 import { getSelectProps, useForm } from '@conform-to/react'

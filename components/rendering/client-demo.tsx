@@ -1,5 +1,6 @@
 'use client'
 
+import { Button } from '@/components/ui/button'
 import {
 	Card,
 	CardContent,
@@ -7,16 +8,24 @@ import {
 	CardHeader,
 	CardTitle,
 } from '@/components/ui/card'
-import { useEffect, useState } from 'react'
+import { useEffect, useReducer, useState } from 'react'
 
 export function ClientDemo() {
 	const [randomId, setRandomId] = useState<string | null>(null)
 	const [loading, setLoading] = useState(true)
+	const [ignored, forceUpdate] = useReducer((x) => x + 1, 0)
+	function handleClick() {
+		// 強制的に再レンダリングする
+		forceUpdate()
+	}
 
+	// biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
 	useEffect(() => {
 		const fetchData = async () => {
 			try {
-				const response = await fetch('/api/random')
+				const response = await fetch(
+					`${process.env.NEXT_PUBLIC_API_URL}/api/random`,
+				)
 				const data: ApiResponse<string> = await response.json()
 				setRandomId(data.data ?? null)
 			} catch (error) {
@@ -27,7 +36,7 @@ export function ClientDemo() {
 		}
 
 		fetchData()
-	}, [])
+	}, [ignored])
 
 	return (
 		<Card>
@@ -38,6 +47,7 @@ export function ClientDemo() {
 				</CardDescription>
 			</CardHeader>
 			<CardContent>
+				<Button onClick={handleClick}>再描画</Button>
 				{loading ? <p>Loading...</p> : <p className="font-mono">{randomId}</p>}
 			</CardContent>
 		</Card>

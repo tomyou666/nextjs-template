@@ -1,6 +1,5 @@
 'use client'
 
-import { submitRadioForm } from '@/app/actions'
 import { Button } from '@/components/ui/button'
 import {
 	Card,
@@ -10,6 +9,7 @@ import {
 	CardTitle,
 } from '@/components/ui/card'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
+import { submitRadioForm } from '@/lib/actions'
 import { radioSchema } from '@/lib/schemas'
 import type { SubmissionResult } from '@conform-to/dom'
 import { getCollectionProps, useForm } from '@conform-to/react'

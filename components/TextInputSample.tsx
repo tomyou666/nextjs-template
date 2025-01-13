@@ -1,6 +1,5 @@
 'use client'
 
-import { submitTextForm } from '@/app/actions'
 import { Button } from '@/components/ui/button'
 import {
 	Card,
@@ -10,6 +9,7 @@ import {
 	CardTitle,
 } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
+import { submitTextForm } from '@/lib/actions'
 import { textSchema } from '@/lib/schemas'
 import type { SubmissionResult } from '@conform-to/dom'
 import { useForm } from '@conform-to/react'
@@ -50,7 +50,7 @@ export function TextInputSample() {
 						<div>
 							<label
 								htmlFor={fields.name.id}
-								className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+								className="font-medium text-sm leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
 							>
 								Name
 							</label>
@@ -60,7 +60,7 @@ export function TextInputSample() {
 								type="text"
 								placeholder="John Doe"
 							/>
-							<div className="text-sm text-destructive mt-2">
+							<div className="mt-2 text-destructive text-sm">
 								{fields.name.errors}
 							</div>
 						</div>

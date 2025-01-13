@@ -1,6 +1,5 @@
 'use client'
 
-import { submitTextareaForm } from '@/app/actions'
 import { Button } from '@/components/ui/button'
 import {
 	Card,
@@ -10,6 +9,7 @@ import {
 	CardTitle,
 } from '@/components/ui/card'
 import { Textarea } from '@/components/ui/textarea'
+import { submitTextareaForm } from '@/lib/actions'
 import { textareaSchema } from '@/lib/schemas'
 import type { SubmissionResult } from '@conform-to/dom'
 import { getTextareaProps, useForm } from '@conform-to/react'

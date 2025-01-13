@@ -168,7 +168,7 @@ export const columns: ColumnDef<Payment>[] = [
 							Copy payment ID
 						</DropdownMenuItem>
 						<DropdownMenuSeparator />
-						<DropdownMenuItem onClick={() => handleEdit(payment)}>
+						<DropdownMenuItem onClick={() => {handleEdit(payment)}}>
 							Edit
 						</DropdownMenuItem>
 						<DropdownMenuItem onClick={() => handleDelete(payment.id)}>

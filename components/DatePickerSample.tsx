@@ -1,6 +1,5 @@
 'use client'
 
-import { submitDateForm } from '@/app/actions'
 import { Button } from '@/components/ui/button'
 import { Calendar } from '@/components/ui/calendar'
 import {
@@ -15,6 +14,7 @@ import {
 	PopoverContent,
 	PopoverTrigger,
 } from '@/components/ui/popover'
+import { submitDateForm } from '@/lib/actions'
 import { dateSchema } from '@/lib/schemas'
 import { cn } from '@/lib/utils'
 import type { SubmissionResult } from '@conform-to/dom'

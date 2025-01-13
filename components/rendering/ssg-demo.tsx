@@ -7,7 +7,12 @@ import {
 } from '@/components/ui/card'
 
 async function getData() {
-	const response = await fetch('http://localhost:3000/api/random')
+	const response = await fetch(
+		`${process.env.NEXT_PUBLIC_API_URL}/api/random`,
+		{
+			cache: 'force-cache',
+		},
+	)
 	const data: ApiResponse<string> = await response.json()
 	return data.data
 }

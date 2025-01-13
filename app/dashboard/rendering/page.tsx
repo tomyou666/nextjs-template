@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic'
+
 import { RenderingTabs } from '@/components/rendering-tabs'
 
 export default function RenderingPage() {

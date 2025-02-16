@@ -13,7 +13,7 @@ import {
 	useReactTable,
 } from '@tanstack/react-table'
 import { ArrowUpDown, ChevronDown, MoreHorizontal, Plus } from 'lucide-react'
-import * as React from 'react'
+import type * as React from 'react'
 
 import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
@@ -45,6 +45,7 @@ import {
 	TableHeader,
 	TableRow,
 } from '@/components/ui/table'
+import { useState } from 'react'
 
 export type Payment = {
 	id: string
@@ -168,7 +169,11 @@ export const columns: ColumnDef<Payment>[] = [
 							Copy payment ID
 						</DropdownMenuItem>
 						<DropdownMenuSeparator />
-						<DropdownMenuItem onClick={() => {handleEdit(payment)}}>
+						<DropdownMenuItem
+							onClick={() => {
+								handleEdit(payment)
+							}}
+						>
 							Edit
 						</DropdownMenuItem>
 						<DropdownMenuItem onClick={() => handleDelete(payment.id)}>
@@ -182,19 +187,14 @@ export const columns: ColumnDef<Payment>[] = [
 ]
 
 export default function TablePage() {
-	const [sorting, setSorting] = React.useState<SortingState>([])
-	const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
-		[],
-	)
-	const [columnVisibility, setColumnVisibility] =
-		React.useState<VisibilityState>({})
-	const [rowSelection, setRowSelection] = React.useState({})
-	const [data, setData] = React.useState<Payment[]>(initialData)
-	const [isAddDialogOpen, setIsAddDialogOpen] = React.useState(false)
-	const [isEditDialogOpen, setIsEditDialogOpen] = React.useState(false)
-	const [currentPayment, setCurrentPayment] = React.useState<Payment | null>(
-		null,
-	)
+	const [sorting, setSorting] = useState<SortingState>([])
+	const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
+	const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({})
+	const [rowSelection, setRowSelection] = useState({})
+	const [data, setData] = useState<Payment[]>(initialData)
+	const [isAddDialogOpen, setIsAddDialogOpen] = useState(false)
+	const [isEditDialogOpen, setIsEditDialogOpen] = useState(false)
+	const [currentPayment, setCurrentPayment] = useState<Payment | null>(null)
 
 	const table = useReactTable({
 		data,
@@ -395,11 +395,9 @@ function AddEditPaymentForm({
 	onSubmit,
 	initialData,
 }: AddEditPaymentFormProps) {
-	const [email, setEmail] = React.useState(initialData?.email || '')
-	const [amount, setAmount] = React.useState(
-		initialData?.amount.toString() || '',
-	)
-	const [status, setStatus] = React.useState(initialData?.status || 'pending')
+	const [email, setEmail] = useState(initialData?.email || '')
+	const [amount, setAmount] = useState(initialData?.amount.toString() || '')
+	const [status, setStatus] = useState(initialData?.status || 'pending')
 
 	const handleSubmit = (e: React.FormEvent) => {
 		e.preventDefault()

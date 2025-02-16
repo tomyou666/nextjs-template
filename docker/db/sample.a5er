@@ -1,11 +1,11 @@
-﻿# A5:ER FORMAT:18
+﻿# A5:ER FORMAT:19
 # A5:ER ENCODING:UTF8
 # A5:ER Mk-1 Copyright © 2007 m.matsubara
-# A5:SQL Mk-2 Version 2.19.2 Copyright © 1997 - 2024 m.matsubara
+# A5:SQL Mk-2 Version 2.20.1 Copyright © 1997 - 2025 m.matsubara
 #  https://a5m2.mmatsubara.com
 
 [Manager]
-ProjectName=sample2
+ProjectName=sample
 Author=
 MaxEntityRowShow=1000
 ReadOnlyRecommend=0
@@ -29,8 +29,6 @@ FooterRight=
 ShowPageoutRelation=1
 RDBMSType=7
 RDBMSTypeName=PostgreSQL
-GenerateDropTableStatement=1
-DropTableIfExists=1
 DefaultPkName=%0:s_PKC
 DefaultPkIndexName=%0:s_PKI
 DefaultIndexName=%0:s_IX%1:d
@@ -40,6 +38,26 @@ UpperCaseKeyword=0
 ShowTag=1
 ShowCommonAttributes=0
 BugFixEntityWidth=1
+
+[Entity]
+PName=table_info
+LName=テーブル情報
+Comment=テーブル情報
+TableInnerOption=
+TableOption=
+Page=Main
+Left=1600
+Top=650
+Field="ID","ID","@INT","NOT NULL",0,"","",$FFFFFFFF,""
+Field="ステータス","status","@VARCHAR(50)",,,"","",$FFFFFFFF,""
+Field="Eメール","email","@VARCHAR(50)",,,"","",$FFFFFFFF,""
+Field="料金","amount","@DOUBLE",,,"","",$FFFFFFFF,""
+EffectMode=None
+Color=$000000
+BkColor=$FFFFFF
+ModifiedDateTime=20250103015524
+Position="Main",1600,650
+ZOrder=3
 
 [Relation]
 Entity1=member_status
@@ -61,7 +79,7 @@ Bar2=476
 Bar3=1000
 TermPos1=R
 TermPos2=R
-ZOrder=12
+ZOrder=2
 
 [Relation]
 Entity1=member
@@ -82,25 +100,7 @@ Bar2=552
 Bar3=581
 TermPos1=R
 TermPos2=R
-ZOrder=3
-
-[Entity]
-PName=member_status
-LName=会員ステータス
-Comment=
-TableInnerOption=
-TableOption=
-Page=MAIN
-Left=1200
-Top=900
-Field="ID","ID","@CHAR(3)","NOT NULL",0,""," 会員ステータスを識別するコード。",$FFFFFFFF,""
-Field="会員ステータス名称","MEMBER_STATUS_NAME","@VARCHAR(50)",,,"","",$FFFFFFFF,""
-EffectMode=None
-Color=$000000
-BkColor=$FFFFFF
-ModifiedDateTime=20250103015448
-Position="MAIN",1200,900
-ZOrder=26
+ZOrder=1
 
 [Entity]
 PName=member
@@ -108,9 +108,9 @@ LName=会員
 Comment= 会員登録時にデータが登録される。基本的に物理削除はなく、退会したらステータスが退会会員になる。
 TableInnerOption=
 TableOption=
-Page=MAIN
-Left=1700
-Top=750
+Page=Main
+Left=1750
+Top=800
 Field="ID","id","serial","NOT NULL",0,""," 会員を識別するID。連番として基本的に自動採番される。（会員IDだけに限らず）採番方法はDBMSによって変わる。",$FFFFFFFF,""
 Field="会員ステータスコード","member_status_code","@CHAR(3)",,,"","",$FFFFFFFF,""
 Index=FK_MEMBER_MEMBER_STATUS=0,MEMBER_STATUS_CODE
@@ -118,28 +118,26 @@ EffectMode=None
 Color=$000000
 BkColor=$FFFFFF
 ModifiedDateTime=20250103015438
-Position="MAIN",1700,750
-ZOrder=31
+Position="Main",1750,800
+ZOrder=6
 
 [Entity]
-PName=table_info
-LName=テーブル情報
-Comment=テーブル情報
+PName=member_status
+LName=会員ステータス
+Comment=
 TableInnerOption=
 TableOption=
-Page=MAIN
-Left=1550
-Top=600
-Field="ID","ID","@INT","NOT NULL",0,"","",$FFFFFFFF,""
-Field="ステータス","status","@VARCHAR(50)",,,"","",$FFFFFFFF,""
-Field="Eメール","email","@VARCHAR(50)",,,"","",$FFFFFFFF,""
-Field="料金","amount","@DOUBLE",,,"","",$FFFFFFFF,""
+Page=Main
+Left=1250
+Top=950
+Field="ID","ID","@CHAR(3)","NOT NULL",0,""," 会員ステータスを識別するコード。",$FFFFFFFF,""
+Field="会員ステータス名称","MEMBER_STATUS_NAME","@VARCHAR(50)",,,"","",$FFFFFFFF,""
 EffectMode=None
 Color=$000000
 BkColor=$FFFFFF
-ModifiedDateTime=20250103015524
-Position="MAIN",1550,600
-ZOrder=19
+ModifiedDateTime=20250103015448
+Position="Main",1250,950
+ZOrder=5
 
 [Entity]
 PName=purchace
@@ -147,9 +145,9 @@ LName=購入
 Comment= 一つの商品に対する一回の購入を表現する。一回の購入で一つの商品を複数個買うこともある。
 TableInnerOption=
 TableOption=
-Page=MAIN
-Left=2100
-Top=800
+Page=Main
+Left=2150
+Top=850
 Field="ID","id","serial","NOT NULL",0,""," 連番",$FFFFFFFF,""
 Field="会員ID","member_id","@INT",,,""," 会員を参照するID。購入を識別する自然キー（複合ユニーク制約）の筆頭要素。",$FFFFFFFF,""
 Index=PURCHASE_MEMBER_ID=2,MEMBER_ID
@@ -159,5 +157,5 @@ EffectMode=None
 Color=$000000
 BkColor=$FFFFFF
 ModifiedDateTime=20250103015456
-Position="MAIN",2100,800
-ZOrder=21
+Position="Main",2150,850
+ZOrder=4

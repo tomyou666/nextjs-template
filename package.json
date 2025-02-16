@@ -8,7 +8,9 @@
     "start": "next start",
     "lint": "next lint",
     "test": "vitest",
-    "knip": "knip"
+    "knip": "knip",
+    "prisma:deploy": "npx prisma migrate deploy",
+    "prisma:migrate:dev": "npx prisma migrate dev"
   },
   "dependencies": {
     "@auth/prisma-adapter": "^2.7.4",

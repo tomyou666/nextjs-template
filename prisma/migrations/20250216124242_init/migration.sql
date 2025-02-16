@@ -45,6 +45,39 @@ CREATE TABLE "VerificationToken" (
     "expires" TIMESTAMP(3) NOT NULL
 );
 
+-- CreateTable
+CREATE TABLE "member" (
+    "id" SERIAL NOT NULL,
+    "member_status_code" CHAR(3),
+
+    CONSTRAINT "member_pkc" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "member_status" (
+    "id" CHAR(3) NOT NULL,
+    "member_status_name" VARCHAR(50),
+
+    CONSTRAINT "member_status_pkc" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "purchace" (
+    "id" SERIAL NOT NULL,
+    "member_id" INTEGER,
+    CONSTRAINT "purchace_pkc" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "table_info" (
+    "id" INTEGER NOT NULL,
+    "status" VARCHAR(50),
+    "email" VARCHAR(50),
+    "amount" DOUBLE PRECISION,
+
+    CONSTRAINT "table_info_pkc" PRIMARY KEY ("id")
+);
+
 -- CreateIndex
 CREATE UNIQUE INDEX "Account_provider_providerAccountId_key" ON "Account"("provider", "providerAccountId");
 
@@ -59,6 +92,12 @@ CREATE UNIQUE INDEX "VerificationToken_token_key" ON "VerificationToken"("token"
 
 -- CreateIndex
 CREATE UNIQUE INDEX "VerificationToken_identifier_token_key" ON "VerificationToken"("identifier", "token");
+
+-- CreateIndex
+CREATE INDEX "fk_member_member_status" ON "member"("member_status_code");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "purchase_member_id" ON "purchace"("member_id");
 
 -- AddForeignKey
 ALTER TABLE "Account" ADD CONSTRAINT "Account_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;

@@ -28,7 +28,6 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - ../docker/db/sql/:/docker-entrypoint-initdb.d
       - app-db-data:/var/lib/postgresql/data
     # コンテナ間の接続を可能にするためのネットワーク設定
     networks:

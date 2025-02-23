@@ -7,8 +7,47 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Account {
-  id                String  @id @default(cuid())
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model member {
+  id                 Int            @id(map: "member_PKC") @default(autoincrement())
+  member_status_code String?        @db.Char(3)
+  created_at         DateTime?      @default(now())
+  updated_at         DateTime?      @default(now()) @updatedAt
+  member_status      member_status? @relation(fields: [member_status_code], references: [ID], onDelete: NoAction, onUpdate: NoAction, map: "member_FK1")
+  purchace           purchace[]
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model member_status {
+  ID                 String    @id(map: "member_status_PKC") @db.Char(3)
+  MEMBER_STATUS_NAME String?   @db.VarChar(50)
+  created_at         DateTime? @default(now())
+  updated_at         DateTime? @default(now()) @updatedAt
+  member             member[]
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model purchace {
+  id         Int       @id(map: "purchace_PKC") @default(autoincrement())
+  member_id  Int?
+  created_at DateTime? @default(now())
+  updated_at DateTime? @default(now()) @updatedAt
+  member     member?   @relation(fields: [member_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "purchace_FK1")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model table_info {
+  ID         Int       @id(map: "table_info_PKC") @unique(map: "table_info_IX1") @default(autoincrement())
+  status     String?   @db.VarChar(50)
+  email      String?   @db.VarChar(50)
+  amount     Float?
+  created_at DateTime? @default(now())
+  updated_at DateTime? @default(now()) @updatedAt
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model account {
+  id                String    @id(map: "account_PKC") @default(cuid())
   userId            String
   type              String
   provider          String
@@ -20,64 +59,45 @@ model Account {
   scope             String?
   id_token          String?
   session_state     String?
-  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  created_at        DateTime? @default(now())
+  updated_at        DateTime? @default(now())
+  user              user      @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "account_FK1")
 
-  @@unique([provider, providerAccountId])
+  @@unique([provider, providerAccountId], map: "Account_provider_providerAccountId_key")
 }
 
-model Session {
-  id           String   @id @default(cuid())
-  sessionToken String   @unique
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model session {
+  id           String    @id(map: "session_PKC") @default(cuid())
+  sessionToken String    @unique(map: "Session_sessionToken_key")
   userId       String
   expires      DateTime
-  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  created_at   DateTime? @default(now())
+  updated_at   DateTime? @default(now())
+  user         user      @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "session_FK1")
 }
 
-model User {
-  id            String    @id @default(cuid())
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model user {
+  id            String    @id(map: "user_PKC") @default(cuid())
   name          String?
-  email         String?   @unique
+  email         String?   @unique(map: "User_email_key")
   emailVerified DateTime?
   password      String?
   image         String?
-  accounts      Account[]
-  sessions      Session[]
+  created_at    DateTime? @default(now())
+  updated_at    DateTime? @default(now())
+  account       account[]
+  session       session[]
 }
 
-model VerificationToken {
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model verificationToken {
   identifier String
-  token      String   @unique
+  token      String    @unique(map: "VerificationToken_token_key")
   expires    DateTime
+  created_at DateTime? @default(now())
+  updated_at DateTime? @default(now())
 
-  @@unique([identifier, token])
-}
-
-/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
-model member {
-  id                 Int     @id(map: "member_pkc") @default(autoincrement())
-  member_status_code String? @db.Char(3)
-
-  @@index([member_status_code], map: "fk_member_member_status")
-}
-
-/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
-model member_status {
-  id                 String  @id(map: "member_status_pkc") @db.Char(3)
-  member_status_name String? @db.VarChar(50)
-}
-
-/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
-model purchace {
-  id        Int     @id(map: "purchace_pkc") @default(autoincrement())
-  member_id Int?    @unique(map: "purchase_member_id")
-  test1     String?
-  test2     String?
-}
-
-/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
-model table_info {
-  id     Int     @id(map: "table_info_pkc")
-  status String? @db.VarChar(50)
-  email  String? @db.VarChar(50)
-  amount Float?
+  @@unique([identifier, token], map: "VerificationToken_identifier_token_key")
 }

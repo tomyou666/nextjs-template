@@ -45,6 +45,7 @@ import {
 	TableHeader,
 	TableRow,
 } from '@/components/ui/table'
+import { useQuery } from '@tanstack/react-query'
 import { useState } from 'react'
 
 export type Payment = {
@@ -195,6 +196,19 @@ export default function TablePage() {
 	const [isAddDialogOpen, setIsAddDialogOpen] = useState(false)
 	const [isEditDialogOpen, setIsEditDialogOpen] = useState(false)
 	const [currentPayment, setCurrentPayment] = useState<Payment | null>(null)
+	const { data: tableInfo } = useQuery({
+		queryKey: ['tableInfo'],
+		queryFn: async () => {
+			const response = await fetch(
+				`${process.env.NEXT_PUBLIC_API_URL}/api/table/getTableInfo`,
+			)
+			const json = await response.json()
+			if (json.status === 'success') {
+				return json.data
+			}
+			throw new Error(json.message || 'エラーが発生しました')
+		},
+	})
 
 	const table = useReactTable({
 		data,

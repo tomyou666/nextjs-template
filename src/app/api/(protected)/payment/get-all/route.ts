@@ -1,13 +1,13 @@
 import { auth } from '@/lib/apiAuth'
 import { prisma } from '@/lib/prisma'
-import type { table_info as TableInfo } from '@prisma/client'
+import type { payment as Payment } from '@prisma/client'
 import { type NextRequest, NextResponse } from 'next/server'
 
 export const GET = auth(async (req: NextRequest) => {
-	const tableInfo: TableInfo[] = await prisma.table_info.findMany()
-	const response: ApiResponse<TableInfo[]> = {
+	const payments: Payment[] = await prisma.payment.findMany()
+	const response: ApiResponse<Payment[]> = {
 		status: 'success',
-		data: tableInfo,
+		data: payments,
 	}
 	return NextResponse.json(response, { status: 200 })
 })

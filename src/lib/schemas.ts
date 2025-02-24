@@ -1,3 +1,4 @@
+import type { payment as Payment } from '@prisma/client'
 import * as z from 'zod'
 
 export const textSchema = z.object({
@@ -77,3 +78,23 @@ export const signupSchema = z
 		message: 'パスワードが一致しません',
 		path: ['confirmPassword'],
 	})
+
+export const paymentSchema = z.object({
+	email: z
+		.string()
+		.email({ message: 'メールアドレスが無効です' })
+		.nullable()
+		.optional(),
+	amount: z
+		.number()
+		.min(0, { message: '金額は0以上である必要があります' })
+		.nullable()
+		.optional(),
+	status: z.string().nullable().optional(),
+})
+
+export const commonColumnsSchema = z.object({
+	id: z.number(),
+	created_at: z.date().nullable().optional(),
+	updated_at: z.date().nullable().optional(),
+})

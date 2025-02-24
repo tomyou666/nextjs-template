@@ -1,5 +1,5 @@
 -- Project Name : sample
--- Date/Time    : 2025/02/23 17:20:12
+-- Date/Time    : 2025/02/24 4:27:40
 -- Author       : tomyou
 -- RDBMS Type   : PostgreSQL
 -- Application  : A5:SQL Mk-2
@@ -112,21 +112,21 @@ create table "purchace" (
   , constraint "purchace_PKC" primary key ("id")
 ) ;
 
--- テーブル情報
-drop table if exists "table_info" cascade;
+-- 支払情報
+drop table if exists "payment" cascade;
 
-create table "table_info" (
-  "ID" serial not null
+create table "payment" (
+  "id" serial not null
   , "status" character varying(50)
   , "email" character varying(50)
   , "amount" double precision
   , "created_at" TIMESTAMP(3) default CURRENT_TIMESTAMP
   , "updated_at" TIMESTAMP(3) default CURRENT_TIMESTAMP
-  , constraint "table_info_PKC" primary key ("ID")
+  , constraint "payment_PKC" primary key ("id")
 ) ;
 
-alter table "table_info" add constraint "table_info_IX1"
-  unique ("ID") ;
+alter table "payment" add constraint "payment_IX1"
+  unique ("id") ;
 
 alter table "account"
   add constraint "account_FK1" foreign key ("userId") references "user"("id");
@@ -199,11 +199,11 @@ comment on column "purchace"."member_id" is '会員ID: 会員を参照するID�
 comment on column "purchace"."created_at" is '作成日時';
 comment on column "purchace"."updated_at" is '更新日時';
 
-comment on table "table_info" is 'テーブル情報:テーブル情報';
-comment on column "table_info"."ID" is 'ID';
-comment on column "table_info"."status" is 'ステータス';
-comment on column "table_info"."email" is 'Eメール';
-comment on column "table_info"."amount" is '料金';
-comment on column "table_info"."created_at" is '作成日時';
-comment on column "table_info"."updated_at" is '更新日時';
+comment on table "payment" is '支払情報';
+comment on column "payment"."id" is 'ID';
+comment on column "payment"."status" is 'ステータス';
+comment on column "payment"."email" is 'Eメール';
+comment on column "payment"."amount" is '料金';
+comment on column "payment"."created_at" is '作成日時';
+comment on column "payment"."updated_at" is '更新日時';
 

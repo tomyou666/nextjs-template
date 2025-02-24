@@ -36,16 +36,6 @@ model purchace {
 }
 
 /// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
-model table_info {
-  ID         Int       @id(map: "table_info_PKC") @unique(map: "table_info_IX1") @default(autoincrement())
-  status     String?   @db.VarChar(50)
-  email      String?   @db.VarChar(50)
-  amount     Float?
-  created_at DateTime? @default(now())
-  updated_at DateTime? @default(now()) @updatedAt
-}
-
-/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
 model account {
   id                String    @id(map: "account_PKC") @default(cuid())
   userId            String
@@ -60,7 +50,7 @@ model account {
   id_token          String?
   session_state     String?
   created_at        DateTime? @default(now())
-  updated_at        DateTime? @default(now())
+  updated_at        DateTime? @default(now()) @updatedAt
   user              user      @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "account_FK1")
 
   @@unique([provider, providerAccountId], map: "Account_provider_providerAccountId_key")
@@ -73,7 +63,7 @@ model session {
   userId       String
   expires      DateTime
   created_at   DateTime? @default(now())
-  updated_at   DateTime? @default(now())
+  updated_at   DateTime? @default(now()) @updatedAt
   user         user      @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "session_FK1")
 }
 
@@ -86,7 +76,7 @@ model user {
   password      String?
   image         String?
   created_at    DateTime? @default(now())
-  updated_at    DateTime? @default(now())
+  updated_at    DateTime? @default(now()) @updatedAt
   account       account[]
   session       session[]
 }
@@ -97,7 +87,17 @@ model verificationToken {
   token      String    @unique(map: "VerificationToken_token_key")
   expires    DateTime
   created_at DateTime? @default(now())
-  updated_at DateTime? @default(now())
+  updated_at DateTime? @default(now()) @updatedAt
 
   @@unique([identifier, token], map: "VerificationToken_identifier_token_key")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model payment {
+  id         Int       @id(map: "payment_PKC") @unique(map: "payment_IX1") @default(autoincrement())
+  status     String?   @db.VarChar(50)
+  email      String?   @db.VarChar(50)
+  amount     Float?
+  created_at DateTime? @default(now())
+  updated_at DateTime? @default(now()) @updatedAt
 }

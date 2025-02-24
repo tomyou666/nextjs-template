@@ -12,9 +12,16 @@ import {
 	getSortedRowModel,
 	useReactTable,
 } from '@tanstack/react-table'
-import { ArrowUpDown, ChevronDown, MoreHorizontal, Plus } from 'lucide-react'
+import {
+	ArrowUpDown,
+	ChevronDown,
+	LoaderCircle,
+	MoreHorizontal,
+	Plus,
+} from 'lucide-react'
 import type * as React from 'react'
 
+import { queryClient } from '@/app/providers'
 import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
 import {
@@ -45,173 +52,179 @@ import {
 	TableHeader,
 	TableRow,
 } from '@/components/ui/table'
-import { useQuery } from '@tanstack/react-query'
+import { paymentRepository } from '@/lib/repository/paymentRepository'
+import { paymentSchema } from '@/lib/schemas'
+import { queryKeys } from '@/lib/util/queryKeys'
+import { getInputProps, getSelectProps, useForm } from '@conform-to/react'
+import { parseWithZod } from '@conform-to/zod'
+import type { payment as Payment } from '@prisma/client'
+import { useMutation, useQuery } from '@tanstack/react-query'
+import Form from 'next/form'
 import { useState } from 'react'
-
-export type Payment = {
-	id: string
-	amount: number
-	status: 'pending' | 'processing' | 'success' | 'failed'
-	email: string
-}
-
-const initialData: Payment[] = [
-	{
-		id: 'm5gr84i9',
-		amount: 316,
-		status: 'success',
-		email: 'ken99@yahoo.com',
-	},
-	{
-		id: '3u1reuv4',
-		amount: 242,
-		status: 'success',
-		email: 'Abe45@gmail.com',
-	},
-	{
-		id: 'derv1ws0',
-		amount: 837,
-		status: 'processing',
-		email: 'Monserrat44@gmail.com',
-	},
-	{
-		id: '5kma53ae',
-		amount: 874,
-		status: 'success',
-		email: 'Silas22@gmail.com',
-	},
-	{
-		id: 'bhqecj4p',
-		amount: 721,
-		status: 'failed',
-		email: 'carmella@hotmail.com',
-	},
-]
-
-export const columns: ColumnDef<Payment>[] = [
-	{
-		id: 'select',
-		header: ({ table }) => (
-			<Checkbox
-				checked={
-					table.getIsAllPageRowsSelected() ||
-					(table.getIsSomePageRowsSelected() && 'indeterminate')
-				}
-				onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-				aria-label="Select all"
-			/>
-		),
-		cell: ({ row }) => (
-			<Checkbox
-				checked={row.getIsSelected()}
-				onCheckedChange={(value) => row.toggleSelected(!!value)}
-				aria-label="Select row"
-			/>
-		),
-		enableSorting: false,
-		enableHiding: false,
-	},
-	{
-		accessorKey: 'status',
-		header: 'Status',
-		cell: ({ row }) => (
-			<div className="capitalize">{row.getValue('status')}</div>
-		),
-	},
-	{
-		accessorKey: 'email',
-		header: ({ column }) => {
-			return (
-				<Button
-					variant="ghost"
-					onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
-				>
-					Email
-					<ArrowUpDown className="ml-2 h-4 w-4" />
-				</Button>
-			)
-		},
-		cell: ({ row }) => <div className="lowercase">{row.getValue('email')}</div>,
-	},
-	{
-		accessorKey: 'amount',
-		header: () => <div className="text-right">Amount</div>,
-		cell: ({ row }) => {
-			const amount = Number.parseFloat(row.getValue('amount'))
-
-			// Format the amount as a dollar amount
-			const formatted = new Intl.NumberFormat('en-US', {
-				style: 'currency',
-				currency: 'USD',
-			}).format(amount)
-
-			return <div className="text-right font-medium">{formatted}</div>
-		},
-	},
-	{
-		id: 'actions',
-		enableHiding: false,
-		cell: ({ row }) => {
-			const payment = row.original
-
-			return (
-				<DropdownMenu>
-					<DropdownMenuTrigger asChild>
-						<Button variant="ghost" className="h-8 w-8 p-0">
-							<span className="sr-only">Open menu</span>
-							<MoreHorizontal className="h-4 w-4" />
-						</Button>
-					</DropdownMenuTrigger>
-					<DropdownMenuContent align="end">
-						<DropdownMenuLabel>Actions</DropdownMenuLabel>
-						<DropdownMenuItem
-							onClick={() => navigator.clipboard.writeText(payment.id)}
-						>
-							Copy payment ID
-						</DropdownMenuItem>
-						<DropdownMenuSeparator />
-						<DropdownMenuItem
-							onClick={() => {
-								handleEdit(payment)
-							}}
-						>
-							Edit
-						</DropdownMenuItem>
-						<DropdownMenuItem onClick={() => handleDelete(payment.id)}>
-							Delete
-						</DropdownMenuItem>
-					</DropdownMenuContent>
-				</DropdownMenu>
-			)
-		},
-	},
-]
 
 export default function TablePage() {
 	const [sorting, setSorting] = useState<SortingState>([])
 	const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
 	const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({})
 	const [rowSelection, setRowSelection] = useState({})
-	const [data, setData] = useState<Payment[]>(initialData)
 	const [isAddDialogOpen, setIsAddDialogOpen] = useState(false)
 	const [isEditDialogOpen, setIsEditDialogOpen] = useState(false)
 	const [currentPayment, setCurrentPayment] = useState<Payment | null>(null)
-	const { data: tableInfo } = useQuery({
-		queryKey: ['tableInfo'],
+
+	const { data: payments, isLoading } = useQuery({
+		queryKey: queryKeys.payment.all,
 		queryFn: async () => {
-			const response = await fetch(
-				`${process.env.NEXT_PUBLIC_API_URL}/api/table/getTableInfo`,
-			)
-			const json = await response.json()
-			if (json.status === 'success') {
-				return json.data
-			}
-			throw new Error(json.message || 'エラーが発生しました')
+			return (await paymentRepository.getAllPayment()) || []
 		},
 	})
 
+	const createMutation = useMutation({
+		mutationFn: paymentRepository.createPayment,
+		onSuccess: () => {
+			setIsAddDialogOpen(false)
+			queryClient.invalidateQueries({ queryKey: queryKeys.payment.all })
+		},
+	})
+
+	const updateMutation = useMutation({
+		mutationFn: paymentRepository.updatePayment,
+		onSuccess: () => {
+			setIsEditDialogOpen(false)
+			setCurrentPayment(null)
+			queryClient.invalidateQueries({ queryKey: queryKeys.payment.all })
+		},
+	})
+
+	const deleteMutation = useMutation({
+		mutationFn: paymentRepository.deletePayment,
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: queryKeys.payment.all })
+		},
+	})
+
+	const handleAdd = (newPayment: Omit<Payment, 'id'>) => {
+		createMutation.mutate(newPayment)
+		queryClient.invalidateQueries({ queryKey: queryKeys.payment.all })
+	}
+
+	const handleEdit = (payment: Payment) => {
+		setCurrentPayment(payment)
+		setIsEditDialogOpen(true)
+	}
+
+	const handleUpdate = (updatedPayment: Payment) => {
+		updateMutation.mutate(updatedPayment)
+	}
+
+	const handleDelete = (id: number) => {
+		deleteMutation.mutate(id)
+	}
+
+	const columns: ColumnDef<Payment>[] = [
+		{
+			id: 'select',
+			header: ({ table }) => (
+				<Checkbox
+					checked={
+						table.getIsAllPageRowsSelected() ||
+						(table.getIsSomePageRowsSelected() && 'indeterminate')
+					}
+					onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+					aria-label="Select all"
+				/>
+			),
+			cell: ({ row }) => (
+				<Checkbox
+					checked={row.getIsSelected()}
+					onCheckedChange={(value) => row.toggleSelected(!!value)}
+					aria-label="Select row"
+				/>
+			),
+			enableSorting: false,
+			enableHiding: false,
+		},
+		{
+			accessorKey: 'status',
+			header: 'Status',
+			cell: ({ row }) => (
+				<div className="capitalize">{row.getValue('status')}</div>
+			),
+		},
+		{
+			accessorKey: 'email',
+			header: ({ column }) => {
+				return (
+					<Button
+						variant="ghost"
+						onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+					>
+						Email
+						<ArrowUpDown className="ml-2 h-4 w-4" />
+					</Button>
+				)
+			},
+			cell: ({ row }) => (
+				<div className="lowercase">{row.getValue('email')}</div>
+			),
+		},
+		{
+			accessorKey: 'amount',
+			header: () => <div className="text-right">Amount</div>,
+			cell: ({ row }) => {
+				const amount = Number.parseFloat(row.getValue('amount'))
+
+				// Format the amount as a dollar amount
+				const formatted = new Intl.NumberFormat('en-US', {
+					style: 'currency',
+					currency: 'USD',
+				}).format(amount)
+
+				return <div className="text-right font-medium">{formatted}</div>
+			},
+		},
+		{
+			id: 'actions',
+			enableHiding: false,
+			cell: ({ row }) => {
+				const payment = row.original
+
+				return (
+					<DropdownMenu>
+						<DropdownMenuTrigger asChild>
+							<Button variant="ghost" className="h-8 w-8 p-0">
+								<span className="sr-only">Open menu</span>
+								<MoreHorizontal className="h-4 w-4" />
+							</Button>
+						</DropdownMenuTrigger>
+						<DropdownMenuContent align="end">
+							<DropdownMenuLabel>Actions</DropdownMenuLabel>
+							<DropdownMenuItem
+								onClick={() =>
+									navigator.clipboard.writeText(payment.id.toString())
+								}
+							>
+								Copy payment ID
+							</DropdownMenuItem>
+							<DropdownMenuSeparator />
+							<DropdownMenuItem
+								onClick={() => {
+									handleEdit(payment)
+								}}
+							>
+								Edit
+							</DropdownMenuItem>
+							<DropdownMenuItem onClick={() => handleDelete(payment.id)}>
+								Delete
+							</DropdownMenuItem>
+						</DropdownMenuContent>
+					</DropdownMenu>
+				)
+			},
+		},
+	]
+
 	const table = useReactTable({
-		data,
+		data: payments || [],
 		columns,
 		onSortingChange: setSorting,
 		onColumnFiltersChange: setColumnFilters,
@@ -228,26 +241,6 @@ export default function TablePage() {
 			rowSelection,
 		},
 	})
-
-	const handleAdd = (newPayment: Omit<Payment, 'id'>) => {
-		const id = Math.random().toString(36).substr(2, 9)
-		setData([...data, { ...newPayment, id }])
-		setIsAddDialogOpen(false)
-	}
-
-	const handleEdit = (payment: Payment) => {
-		setCurrentPayment(payment)
-		setIsEditDialogOpen(true)
-	}
-
-	const handleUpdate = (updatedPayment: Payment) => {
-		setData(data.map((p) => (p.id === updatedPayment.id ? updatedPayment : p)))
-		setIsEditDialogOpen(false)
-	}
-
-	const handleDelete = (id: string) => {
-		setData(data.filter((p) => p.id !== id))
-	}
 
 	return (
 		<div className="space-y-4">
@@ -329,7 +322,15 @@ export default function TablePage() {
 						))}
 					</TableHeader>
 					<TableBody>
-						{table.getRowModel().rows?.length ? (
+						{isLoading ? (
+							<TableRow>
+								<TableCell colSpan={columns.length} className="h-24">
+									<div className="flex items-center justify-center">
+										<LoaderCircle className="h-6 w-6 animate-spin" />
+									</div>
+								</TableCell>
+							</TableRow>
+						) : table.getRowModel().rows?.length ? (
 							table.getRowModel().rows.map((row) => (
 								<TableRow
 									key={row.id}
@@ -401,7 +402,7 @@ export default function TablePage() {
 }
 
 interface AddEditPaymentFormProps {
-	onSubmit: (payment: Payment | Omit<Payment, 'id'>) => void
+	onSubmit: (payment: Payment) => void
 	initialData?: Payment
 }
 
@@ -409,62 +410,88 @@ function AddEditPaymentForm({
 	onSubmit,
 	initialData,
 }: AddEditPaymentFormProps) {
-	const [email, setEmail] = useState(initialData?.email || '')
-	const [amount, setAmount] = useState(initialData?.amount.toString() || '')
-	const [status, setStatus] = useState(initialData?.status || 'pending')
-
-	const handleSubmit = (e: React.FormEvent) => {
-		e.preventDefault()
-		const payment = {
-			...(initialData && { id: initialData.id }),
-			email,
-			amount: Number.parseFloat(amount),
-			status: status as Payment['status'],
-		}
-		onSubmit(payment)
-	}
+	const [form, fields] = useForm({
+		onSubmit: (event) => {
+			event.preventDefault()
+			const formData = new FormData(event.currentTarget)
+			const payment = {
+				id: initialData?.id ?? 0,
+				email: formData.get('email') as string,
+				amount: Number(formData.get('amount')),
+				status: formData.get('status') as string,
+				created_at: initialData?.created_at ?? new Date(),
+				updated_at: new Date(),
+			}
+			onSubmit(payment as Payment)
+		},
+		onValidate({ formData }) {
+			return parseWithZod(formData, { schema: paymentSchema })
+		},
+		shouldValidate: 'onBlur',
+		shouldRevalidate: 'onInput',
+	})
 
 	return (
-		<form onSubmit={handleSubmit}>
+		<form
+			id={form.id}
+			onSubmit={form.onSubmit}
+			className="space-y-4"
+			noValidate
+		>
 			<div className="grid gap-4 py-4">
 				<div className="grid grid-cols-4 items-center gap-4">
-					<Label htmlFor="email" className="text-right">
+					<Label htmlFor={fields.email.id} className="text-right">
 						Email
 					</Label>
-					<Input
-						id="email"
-						value={email}
-						onChange={(e) => setEmail(e.target.value)}
-						className="col-span-3"
-					/>
+					<div className="col-span-3">
+						<Input
+							{...getInputProps(fields.email, { type: 'email' })}
+							defaultValue={initialData?.email ?? ''}
+						/>
+						{fields.email.errors && (
+							<div className="text-destructive text-sm">
+								{fields.email.errors}
+							</div>
+						)}
+					</div>
 				</div>
 				<div className="grid grid-cols-4 items-center gap-4">
-					<Label htmlFor="amount" className="text-right">
+					<Label htmlFor={fields.amount.id} className="text-right">
 						Amount
 					</Label>
-					<Input
-						id="amount"
-						type="number"
-						value={amount}
-						onChange={(e) => setAmount(e.target.value)}
-						className="col-span-3"
-					/>
+					<div className="col-span-3">
+						<Input
+							{...getInputProps(fields.amount, { type: 'number' })}
+							defaultValue={initialData?.amount?.toString() ?? ''}
+						/>
+						{fields.amount.errors && (
+							<div className="text-destructive text-sm">
+								{fields.amount.errors}
+							</div>
+						)}
+					</div>
 				</div>
 				<div className="grid grid-cols-4 items-center gap-4">
-					<Label htmlFor="status" className="text-right">
+					<Label htmlFor={fields.status.id} className="text-right">
 						Status
 					</Label>
-					<select
-						id="status"
-						value={status}
-						onChange={(e) => setStatus(e.target.value)}
-						className="col-span-3"
-					>
-						<option value="pending">Pending</option>
-						<option value="processing">Processing</option>
-						<option value="success">Success</option>
-						<option value="failed">Failed</option>
-					</select>
+					<div className="col-span-3">
+						<select
+							{...getSelectProps(fields.status)}
+							defaultValue={initialData?.status ?? 'pending'}
+							className="w-full rounded-md border border-input bg-background px-3 py-2"
+						>
+							<option value="pending">Pending</option>
+							<option value="processing">Processing</option>
+							<option value="success">Success</option>
+							<option value="failed">Failed</option>
+						</select>
+						{fields.status.errors && (
+							<div className="text-destructive text-sm">
+								{fields.status.errors}
+							</div>
+						)}
+					</div>
 				</div>
 			</div>
 			<DialogFooter>

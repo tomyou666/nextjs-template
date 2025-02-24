@@ -49,23 +49,23 @@ ShowCommonAttributes=1
 BugFixEntityWidth=1
 
 [Entity]
-PName=table_info
-LName=テーブル情報
-Comment=テーブル情報
+PName=payment
+LName=支払情報
+Comment=
 TableInnerOption=
 TableOption=
 Page=MAIN
 Left=1600
 Top=650
-Field="ID","ID","serial","NOT NULL",0,"","",$FFFFFFFF,""
+Field="ID","id","serial","NOT NULL",0,"","",$FFFFFFFF,""
 Field="ステータス","status","@VARCHAR(50)",,,"","",$FFFFFFFF,""
 Field="Eメール","email","@VARCHAR(50)",,,"","",$FFFFFFFF,""
 Field="料金","amount","@DOUBLE",,,"","",$FFFFFFFF,""
-Index==2,ID
+Index==2,id
 EffectMode=None
 Color=$000000
 BkColor=$FFFFFF
-ModifiedDateTime=20250223163219
+ModifiedDateTime=20250224042729
 Position="MAIN",1600,650
 ZOrder=3
 

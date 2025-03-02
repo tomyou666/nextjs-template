@@ -69,6 +69,10 @@ const data: SidebarData = {
 					title: 'Settings',
 					url: '/dashboard/settings',
 				},
+				{
+					title: '通知・エラーテスト',
+					url: '/dashboard/error',
+				},
 			],
 		},
 	],

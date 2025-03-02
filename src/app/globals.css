@@ -44,6 +44,14 @@ https://magicfront.dev/shadcn-ui-theme-generator?d=red&dh=dc2626&p=blue&ph=2563e
 		--destructive: 0 84.2% 60.2%;
 		--destructive-foreground: 0 0% 98%;
 
+		/* 追加：success色（緑系） */
+		--success: 142 76% 36%;
+		--success-foreground: 0 0% 98%;
+
+		/* 追加：warning色（黄/オレンジ系） */
+		--warning: 38 92% 50%;
+		--warning-foreground: 0 0% 98%;
+
 		--ring: 228 73% 13%;
 
 		--radius: 0.5rem;
@@ -82,6 +90,14 @@ https://magicfront.dev/shadcn-ui-theme-generator?d=red&dh=dc2626&p=blue&ph=2563e
 
 		--destructive: 0 62.8% 30.6%;
 		--destructive-foreground: 230 10% 97.1%;
+
+		/* 追加：success色（緑系） */
+		--success: 142 70.6% 45.3%;
+		--success-foreground: 230 10% 97.1%;
+
+		/* 追加：warning色（黄/オレンジ系） */
+		--warning: 38 92% 50%;
+		--warning-foreground: 230 10% 97.1%;
 
 		--ring: 230 100% 42%;
 	}

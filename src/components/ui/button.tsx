@@ -2,8 +2,44 @@ import { Slot } from '@radix-ui/react-slot'
 import { type VariantProps, cva } from 'class-variance-authority'
 import * as React from 'react'
 
-import { cn } from '@/lib/util/utils'
+import { cn } from '@/lib/utils'
 
+/**
+ * ボタンのバリエーション定義
+ *
+ * 使用例:
+ * ```tsx
+ * // デフォルトボタン（青/プライマリー）
+ * <Button>デフォルトボタン</Button>
+ *
+ * // 破壊的アクション用ボタン（赤）
+ * <Button variant="destructive">削除</Button>
+ *
+ * // アウトラインボタン
+ * <Button variant="outline">アウトライン</Button>
+ *
+ * // セカンダリーボタン（グレー）
+ * <Button variant="secondary">セカンダリー</Button>
+ *
+ * // ゴーストボタン（背景なし、ホバー時のみ背景色）
+ * <Button variant="ghost">ゴースト</Button>
+ *
+ * // リンクボタン（下線付きテキスト）
+ * <Button variant="link">リンク</Button>
+ *
+ * // 成功アクション用ボタン（緑）
+ * <Button variant="success">成功</Button>
+ *
+ * // 警告アクション用ボタン（黄/オレンジ）
+ * <Button variant="warning">警告</Button>
+ *
+ * // サイズバリエーション
+ * <Button size="sm">小</Button>
+ * <Button size="default">中（デフォルト）</Button>
+ * <Button size="lg">大</Button>
+ * <Button size="icon">アイコン</Button>
+ * ```
+ */
 const buttonVariants = cva(
 	'inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md font-medium text-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0',
 	{
@@ -19,6 +55,10 @@ const buttonVariants = cva(
 					'bg-secondary text-secondary-foreground shadow-sm hover:bg-secondary/80',
 				ghost: 'hover:bg-accent hover:text-accent-foreground',
 				link: 'text-primary underline-offset-4 hover:underline',
+				success:
+					'bg-success text-success-foreground shadow-sm hover:bg-success/90',
+				warning:
+					'bg-warning text-warning-foreground shadow-sm hover:bg-warning/90',
 			},
 			size: {
 				default: 'h-9 px-4 py-2',

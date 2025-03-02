@@ -1,6 +1,6 @@
 import { auth } from '@/lib/apiAuth'
 import { prisma } from '@/lib/prisma'
-import { setKeysToUndefined } from '@/lib/util/utils'
+import { setKeysToUndefined } from '@/lib/utils'
 import type { payment as Payment } from '@prisma/client'
 import { type NextRequest, NextResponse } from 'next/server'
 

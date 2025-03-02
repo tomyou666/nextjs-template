@@ -54,7 +54,7 @@ import {
 } from '@/components/ui/table'
 import { paymentRepository } from '@/lib/repository/paymentRepository'
 import { paymentSchema } from '@/lib/schemas'
-import { queryKeys } from '@/lib/util/queryKeys'
+import { queryKeys } from '@/lib/share/queryKeys'
 import { getInputProps, getSelectProps, useForm } from '@conform-to/react'
 import { parseWithZod } from '@conform-to/zod'
 import type { payment as Payment } from '@prisma/client'

@@ -1,6 +1,10 @@
 import pino from 'pino'
+import { LOGGER_CONSTANTS } from './constants'
 
-const logLevel = process.env.NODE_ENV === 'production' ? 'debug' : 'trace'
+const logLevel =
+	process.env.NODE_ENV === 'production'
+		? LOGGER_CONSTANTS.PRODUCTION_LOG_LEVEL
+		: LOGGER_CONSTANTS.DEVELOPMENT_LOG_LEVEL
 const frontendOrigin = process.env.NEXT_PUBLIC_API_URL
 const logUrl = `${frontendOrigin}/api/log`
 
@@ -23,19 +27,19 @@ export const logger = pino(
 				{
 					level: logLevel,
 					target: 'pino-pretty',
-					options: DEFAULT_PRETTY_OPTIONS,
+					options: LOGGER_CONSTANTS.PRETTY_OPTIONS,
 				},
 				{
 					level: logLevel,
 					target: 'pino-roll',
 					options: {
-						file: 'logs/log',
+						file: LOGGER_CONSTANTS.LOG_FILE_PATH,
 						mkdir: true,
-						size: '10m',
+						size: LOGGER_CONSTANTS.LOG_FILE_SIZE,
 						limit: {
-							count: 10,
+							count: LOGGER_CONSTANTS.LOG_FILE_COUNT,
 						},
-						dateFormat: 'yyyy-MM-dd',
+						dateFormat: LOGGER_CONSTANTS.LOG_DATE_FORMAT,
 					},
 				},
 			],

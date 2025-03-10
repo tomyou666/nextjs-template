@@ -1,5 +1,5 @@
-import { auth } from '@/lib/apiAuth'
-import { logger } from '@/lib/logger'
+import { auth } from '@/lib/backend/auth/apiAuth'
+import { logger } from '@/lib/share/logger'
 import type { Log } from '@/types/Log'
 import { type NextRequest, NextResponse } from 'next/server'
 

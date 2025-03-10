@@ -1,5 +1,5 @@
 import { SignupForm } from '@/components/signup-form'
-import { authOptions } from '@/lib/auth'
+import { authOptions } from '@/lib/backend/auth/auth'
 import { getServerSession } from 'next-auth'
 import { redirect } from 'next/navigation'
 

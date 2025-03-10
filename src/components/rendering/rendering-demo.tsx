@@ -1,7 +1,7 @@
 'use client'
 
 import { Button } from '@/components/ui/button'
-import { refreshData } from '@/lib/actions'
+import { refreshData } from '@/lib/backend/actions'
 import { useRouter } from 'next/navigation'
 import { startTransition, useState } from 'react'
 

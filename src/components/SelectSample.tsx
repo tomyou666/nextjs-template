@@ -15,8 +15,8 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from '@/components/ui/select'
-import { submitSelectForm } from '@/lib/actions'
-import { selectSchema } from '@/lib/schemas'
+import { submitSelectForm } from '@/lib/backend/actions'
+import { selectSchema } from '@/lib/share/schemas'
 import type { SubmissionResult } from '@conform-to/dom'
 import { getSelectProps, useForm } from '@conform-to/react'
 import { parseWithZod } from '@conform-to/zod'

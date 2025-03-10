@@ -1,5 +1,5 @@
 import withAuth, { type NextRequestWithAuth } from 'next-auth/middleware'
-import { logger } from './src/lib/logger'
+import { logger } from './src/lib/share/logger'
 // export { default } from "next-auth/middleware"
 
 export const config = {

@@ -1,3 +1,5 @@
+'use client'
+
 import { AppSidebar } from '@/components/app-sidebar'
 import { Header } from '@/components/header'
 import {
@@ -13,7 +15,45 @@ import {
 	SidebarProvider,
 	SidebarTrigger,
 } from '@/components/ui/sidebar'
+import { getBreadcrumbsFromPath } from '@/lib/frontend/utils/utils'
 import { Separator } from '@radix-ui/react-separator'
+import { usePathname } from 'next/navigation'
+import React from 'react'
+
+// パンくずリストコンポーネント
+function DashboardBreadcrumb() {
+	const pathname = usePathname()
+	const breadcrumbs = getBreadcrumbsFromPath(pathname)
+
+	return (
+		<Breadcrumb>
+			<BreadcrumbList>
+				{breadcrumbs.map((crumb, index) => {
+					const isLast = index === breadcrumbs.length - 1
+
+					return (
+						<React.Fragment key={crumb.path}>
+							{index > 0 && (
+								<BreadcrumbSeparator
+									className={index === 1 ? 'hidden md:block' : ''}
+								/>
+							)}
+							<BreadcrumbItem className={index === 1 ? 'hidden md:block' : ''}>
+								{isLast ? (
+									<BreadcrumbPage>{crumb.label}</BreadcrumbPage>
+								) : (
+									<BreadcrumbLink href={crumb.path}>
+										{crumb.label}
+									</BreadcrumbLink>
+								)}
+							</BreadcrumbItem>
+						</React.Fragment>
+					)
+				})}
+			</BreadcrumbList>
+		</Breadcrumb>
+	)
+}
 
 export default function DashboardLayout({
 	children,
@@ -27,19 +67,7 @@ export default function DashboardLayout({
 				<header className="flex h-16 shrink-0 items-center gap-2 border-b px-4">
 					<SidebarTrigger className="-ml-1" />
 					<Separator orientation="vertical" className="mr-2 h-4" />
-					<Breadcrumb>
-						<BreadcrumbList>
-							<BreadcrumbItem className="hidden md:block">
-								<BreadcrumbLink href="#">
-									Building Your Application
-								</BreadcrumbLink>
-							</BreadcrumbItem>
-							<BreadcrumbSeparator className="hidden md:block" />
-							<BreadcrumbItem>
-								<BreadcrumbPage>Data Fetching</BreadcrumbPage>
-							</BreadcrumbItem>
-						</BreadcrumbList>
-					</Breadcrumb>
+					<DashboardBreadcrumb />
 				</header>
 				<div className="flex flex-1 flex-col overflow-hidden">
 					<Header />

@@ -3,15 +3,16 @@ import { compare } from 'bcryptjs'
 import type { NextAuthOptions } from 'next-auth'
 import CredentialsProvider from 'next-auth/providers/credentials'
 import GithubProvider from 'next-auth/providers/github'
-import { logger } from './logger'
-import { prisma } from './prisma'
-import { formSchema } from './schemas'
+import { prisma } from '../../prisma'
+import { AUTH_CONSTANTS } from '../../share/constants'
+import { logger } from '../../share/logger'
+import { formSchema } from '../../share/schemas'
 
 export const authOptions: NextAuthOptions = {
 	adapter: PrismaAdapter(prisma),
 	session: {
 		strategy: 'jwt',
-		maxAge: 60 * 60 * 24 * 30, // 1month
+		maxAge: AUTH_CONSTANTS.SESSION_MAX_AGE,
 	},
 	providers: [
 		GithubProvider({
@@ -89,6 +90,6 @@ export const authOptions: NextAuthOptions = {
 		},
 	},
 	pages: {
-		signIn: '/login',
+		signIn: AUTH_CONSTANTS.LOGIN_PAGE,
 	},
 }

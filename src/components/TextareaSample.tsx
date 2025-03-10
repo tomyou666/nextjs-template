@@ -9,8 +9,8 @@ import {
 	CardTitle,
 } from '@/components/ui/card'
 import { Textarea } from '@/components/ui/textarea'
-import { submitTextareaForm } from '@/lib/actions'
-import { textareaSchema } from '@/lib/schemas'
+import { submitTextareaForm } from '@/lib/backend/actions'
+import { textareaSchema } from '@/lib/share/schemas'
 import type { SubmissionResult } from '@conform-to/dom'
 import { getTextareaProps, useForm } from '@conform-to/react'
 import { parseWithZod } from '@conform-to/zod'

@@ -9,7 +9,7 @@ import {
 	selectSchema,
 	textSchema,
 	textareaSchema,
-} from '@/lib/schemas'
+} from '@/lib/share/schemas'
 import { parseWithZod } from '@conform-to/zod'
 import { revalidatePath } from 'next/cache'
 

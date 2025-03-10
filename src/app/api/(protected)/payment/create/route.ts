@@ -1,4 +1,4 @@
-import { auth } from '@/lib/apiAuth'
+import { auth } from '@/lib/backend/auth/apiAuth'
 import { prisma } from '@/lib/prisma'
 import { setKeysToUndefined } from '@/lib/utils'
 import type { payment as Payment } from '@prisma/client'

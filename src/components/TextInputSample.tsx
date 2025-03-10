@@ -9,8 +9,8 @@ import {
 	CardTitle,
 } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
-import { submitTextForm } from '@/lib/actions'
-import { textSchema } from '@/lib/schemas'
+import { submitTextForm } from '@/lib/backend/actions'
+import { textSchema } from '@/lib/share/schemas'
 import type { SubmissionResult } from '@conform-to/dom'
 import { useForm } from '@conform-to/react'
 import { parseWithZod } from '@conform-to/zod'

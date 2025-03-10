@@ -3,7 +3,7 @@
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
-import { formSchema } from '@/lib/schemas'
+import { formSchema } from '@/lib/share/schemas'
 import { cn } from '@/lib/utils'
 import type { SubmissionResult } from '@conform-to/dom'
 import { getInputProps, useForm } from '@conform-to/react'

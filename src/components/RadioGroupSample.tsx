@@ -9,8 +9,8 @@ import {
 	CardTitle,
 } from '@/components/ui/card'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
-import { submitRadioForm } from '@/lib/actions'
-import { radioSchema } from '@/lib/schemas'
+import { submitRadioForm } from '@/lib/backend/actions'
+import { radioSchema } from '@/lib/share/schemas'
 import type { SubmissionResult } from '@conform-to/dom'
 import { getCollectionProps, useForm } from '@conform-to/react'
 import { parseWithZod } from '@conform-to/zod'

@@ -3,6 +3,8 @@
 import { AlertButtonSample } from '@/components/AlertButtonSample'
 import { ErrorButtonSample } from '@/components/ErrorButtonSample'
 import { ToastButtonSample } from '@/components/ToastButtonSample'
+import { MarkdownHelpDialog } from '@/components/markdown-help-dialog'
+import { errorHelpContent } from '@/lib/frontend/markdown/errorHelp'
 
 export default function ErrorPage() {
 	return (
@@ -11,6 +13,11 @@ export default function ErrorPage() {
 				<h2 className="font-bold text-3xl tracking-tight">
 					通知・エラーテスト
 				</h2>
+				<MarkdownHelpDialog
+					title="Next.jsでの通知・エラー処理について"
+					content={errorHelpContent}
+					ariaLabel="通知・エラー処理についてのヘルプ"
+				/>
 			</div>
 			<div className="grid grid-cols-1 gap-8 md:grid-cols-2">
 				<ToastButtonSample />

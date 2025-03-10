@@ -1,5 +1,6 @@
 'use client'
 
+import { ToastAction } from '@/components/ToastContainer'
 import { Button } from '@/components/ui/button'
 import {
 	Card,
@@ -8,7 +9,6 @@ import {
 	CardHeader,
 	CardTitle,
 } from '@/components/ui/card'
-import { ToastAction } from '@/components/ui/toast'
 import { useToast } from '@/hooks/use-toast'
 
 export const ToastButtonSample = () => {
@@ -17,84 +17,106 @@ export const ToastButtonSample = () => {
 	return (
 		<Card>
 			<CardHeader>
-				<CardTitle>Toast Buttons</CardTitle>
+				<CardTitle>トーストサンプル</CardTitle>
 				<CardDescription>
-					Click buttons to show different types of toasts
+					ボタンをクリックして様々なグローバルトーストを表示
 				</CardDescription>
 			</CardHeader>
 			<CardContent>
 				<div className="grid grid-cols-1 gap-4">
 					<Button
-						variant="ghost"
+						variant="success"
 						onClick={() => {
 							toast({
-								variant: 'default',
-								title: 'Default: Catch up ',
-								description: 'Friday, February 10, 2023 at 5:57 PM',
-								duration: 1000,
-								action: (
-									<ToastAction altText="Goto schedule to undo">
-										Undo
-									</ToastAction>
-								),
+								type: 'success',
+								title: '成功',
+								description: '購入が確認されました！',
+								duration: 3000,
+								action: <ToastAction altText="元に戻す">元に戻す</ToastAction>,
 							})
 						}}
 					>
-						Default Button
+						成功トースト
 					</Button>
+
 					<Button
 						variant="default"
 						onClick={() => {
 							toast({
-								variant: 'primary',
-								title: 'Primary: Catch up ',
-								description: 'Friday, February 10, 2023 at 5:57 PM',
-								duration: 1000,
-								action: (
-									<ToastAction altText="Goto schedule to undo">
-										Undo
-									</ToastAction>
-								),
+								type: 'primary',
+								title: '情報',
+								description:
+									'これはグローバル情報トーストのテストです。3秒後に非表示になります。',
+								duration: 3000,
+								action: <ToastAction altText="確認">確認</ToastAction>,
 							})
 						}}
 					>
-						Primary Button
+						情報トースト
 					</Button>
-					<Button
-						variant="secondary"
-						onClick={() => {
-							toast({
-								variant: 'secondary',
-								title: 'Secondary: Catch up ',
-								description: 'Friday, February 10, 2023 at 5:57 PM',
-								duration: 1000,
-								action: (
-									<ToastAction altText="Goto schedule to undo">
-										Undo
-									</ToastAction>
-								),
-							})
-						}}
-					>
-						Secondary Button
-					</Button>
+
 					<Button
 						variant="destructive"
 						onClick={() => {
 							toast({
-								variant: 'destructive',
-								title: 'Destructive: Catch up ',
-								description: 'Friday, February 10, 2023 at 5:57 PM',
-								duration: 1000,
-								action: (
-									<ToastAction altText="Goto schedule to undo">
-										Undo
-									</ToastAction>
-								),
+								type: 'destructive',
+								title: 'エラー',
+								description:
+									'これはグローバルエラートーストのテストです。3秒後に非表示になります。',
+								duration: 3000,
+								action: <ToastAction altText="再試行">再試行</ToastAction>,
 							})
 						}}
 					>
-						Destructive Button
+						エラートースト
+					</Button>
+
+					<Button
+						variant="warning"
+						onClick={() => {
+							toast({
+								type: 'warning',
+								title: '警告',
+								description:
+									'これはグローバル警告トーストのテストです。3秒後に非表示になります。',
+								duration: 3000,
+								action: <ToastAction altText="了解">了解</ToastAction>,
+							})
+						}}
+					>
+						警告トースト
+					</Button>
+
+					<Button
+						variant="secondary"
+						onClick={() => {
+							toast({
+								type: 'secondary',
+								title: 'セカンダリー',
+								description:
+									'これはセカンダリートーストのテストです。3秒後に非表示になります。',
+								duration: 3000,
+								action: <ToastAction altText="閉じる">閉じる</ToastAction>,
+							})
+						}}
+					>
+						セカンダリートースト
+					</Button>
+
+					<Button
+						variant="outline"
+						onClick={() => {
+							toast({
+								type: 'accent',
+								title: 'アクセント',
+								description:
+									'これはアクセントトーストのテストです。3秒後に非表示になります。',
+								duration: 3000,
+								action: <ToastAction altText="OK">OK</ToastAction>,
+							})
+						}}
+					>
+						アクセントトースト
 					</Button>
 				</div>
 			</CardContent>

@@ -1,6 +1,6 @@
-import { logger } from '@/lib/logger'
 import { prisma } from '@/lib/prisma'
-import { signupSchema } from '@/lib/schemas'
+import { logger } from '@/lib/share/logger'
+import { signupSchema } from '@/lib/share/schemas'
 import { hash } from 'bcryptjs'
 import * as jdenticon from 'jdenticon'
 import { nanoid } from 'nanoid'

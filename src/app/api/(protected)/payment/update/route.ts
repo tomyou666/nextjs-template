@@ -1,6 +1,6 @@
-import { auth } from '@/lib/apiAuth'
+import { auth } from '@/lib/backend/auth/apiAuth'
 import { prisma } from '@/lib/prisma'
-import { commonColumnsSchema, paymentSchema } from '@/lib/schemas'
+import { commonColumnsSchema, paymentSchema } from '@/lib/share/schemas'
 import type { payment as Payment } from '@prisma/client'
 import { type NextRequest, NextResponse } from 'next/server'
 

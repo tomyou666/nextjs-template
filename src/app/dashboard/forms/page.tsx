@@ -1,14 +1,14 @@
 'use client'
 
-import { CheckboxSample } from '@/components/CheckboxSample'
+import { CheckboxSample } from '@/app/dashboard/forms/CheckboxSample'
 import { DatePickerSample } from '@/components/DatePickerSample'
 import { EmailInputSample } from '@/components/EmailInputSample'
+import { MarkdownHelpDialog } from '@/components/MarkDownHelpDIalog'
 import { PasswordInputSample } from '@/components/PasswordInputSample'
 import { RadioGroupSample } from '@/components/RadioGroupSample'
 import { SelectSample } from '@/components/SelectSample'
 import { TextInputSample } from '@/components/TextInputSample'
 import { TextareaSample } from '@/components/TextareaSample'
-import { MarkdownHelpDialog } from '@/components/markdown-help-dialog'
 import { formHelpContent } from '@/lib/frontend/markdown/formHelp'
 
 export default function FormsPage() {

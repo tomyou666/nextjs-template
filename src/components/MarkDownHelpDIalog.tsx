@@ -1,6 +1,6 @@
 'use client'
 
-import { MarkdownDialog } from '@/components/markdown-dialog'
+import { MarkdownDialog } from '@/components/MarkdownDialog'
 import { Button } from '@/components/ui/button'
 import { Dialog, DialogTrigger } from '@/components/ui/dialog'
 import { HelpCircle } from 'lucide-react'

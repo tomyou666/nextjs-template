@@ -1,5 +1,5 @@
-import { Overview } from '@/components/overview'
-import { RecentSales } from '@/components/recent-sales'
+import { Overview } from '@/components/Overview'
+import { RecentSales } from '@/components/RecentSales'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 
 export default function DashboardPage() {

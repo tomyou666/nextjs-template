@@ -1,4 +1,4 @@
-import { MarkdownHelpDialog } from '@/components/markdown-help-dialog'
+import { MarkdownHelpDialog } from '@/components/MarkDownHelpDIalog'
 import { stateHelpContent } from '@/lib/frontend/markdown/stateHelp'
 import { StateContent } from './components/state-content'
 import { StateWrapper } from './components/state-wrapper'

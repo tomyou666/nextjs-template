@@ -1,7 +1,7 @@
 'use client'
 
-import { AppSidebar } from '@/components/app-sidebar'
-import { Header } from '@/components/header'
+import { AppSidebar } from '@/app/dashboard/AppSidebar'
+import { Header } from '@/components/Header'
 import {
 	Breadcrumb,
 	BreadcrumbItem,

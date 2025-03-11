@@ -21,7 +21,7 @@ import {
 } from 'lucide-react'
 
 import { queryClient } from '@/app/providers'
-import { MarkdownHelpDialog } from '@/components/markdown-help-dialog'
+import { MarkdownHelpDialog } from '@/components/MarkDownHelpDIalog'
 import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
 import {

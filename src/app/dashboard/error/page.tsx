@@ -1,9 +1,9 @@
 'use client'
 
 import { AlertButtonSample } from '@/app/dashboard/error/AlertButtonSample'
-import { ErrorButtonSample } from '@/components/ErrorButtonSample'
+import { ErrorButtonSample } from '@/app/dashboard/error/ErrorButtonSample'
+import { ToastButtonSample } from '@/app/dashboard/error/ToastButtonSample'
 import { MarkdownHelpDialog } from '@/components/MarkDownHelpDIalog'
-import { ToastButtonSample } from '@/components/ToastButtonSample'
 import { errorHelpContent } from '@/lib/frontend/markdown/errorHelp'
 
 export default function ErrorPage() {

@@ -1,5 +1,5 @@
+import { ModeToggle } from '@/components/ModeToggle'
 import { UserNav } from '@/components/UserNav'
-import { ModeToggle } from '@/components/modeToggle'
 import { Button } from '@/components/ui/button'
 
 export function Header() {

@@ -4,7 +4,7 @@ import {
 	CardDescription,
 	CardHeader,
 	CardTitle,
-} from '../ui/card'
+} from '../../../components/ui/card'
 
 export async function ISRContent() {
 	async function getData() {

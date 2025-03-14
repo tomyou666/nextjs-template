@@ -1,7 +1,7 @@
 export const dynamic = 'force-dynamic'
 
+import { RenderingTabs } from '@/app/dashboard/rendering/RenderingTabs'
 import { MarkdownHelpDialog } from '@/components/MarkDownHelpDIalog'
-import { RenderingTabs } from '@/components/RenderingTabs'
 import { renderingHelpContent } from '@/lib/frontend/markdown/renderingHelp'
 
 export default function RenderingPage() {

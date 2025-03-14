@@ -1,9 +1,9 @@
-import { ClientDemo } from '@/components/rendering/client-demo'
-import { SSGDemo } from '@/components/rendering/ssg-demo'
-import { SSRDemo } from '@/components/rendering/ssr-demo'
+import { ClientDemo } from '@/app/dashboard/rendering/ClientDemo'
+import { SSGDemo } from '@/app/dashboard/rendering/SsgDemo'
+import { SSRDemo } from '@/app/dashboard/rendering/SsrDemo'
 import { Suspense } from 'react'
-import { ISRContent } from './rendering/isr-demo-content'
-import { RenderingDemo } from './rendering/rendering-demo'
+import { ISRContent } from './IsrDemoContent'
+import { RenderingDemo } from './RenderingDemo'
 
 export function RenderingTabs() {
 	return (

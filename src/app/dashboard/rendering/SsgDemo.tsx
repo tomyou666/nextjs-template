@@ -5,20 +5,12 @@ import {
 	CardHeader,
 	CardTitle,
 } from '@/components/ui/card'
-
-async function getData() {
-	const response = await fetch(
-		`${process.env.NEXT_PUBLIC_API_URL}/api/random`,
-		{
-			cache: 'force-cache',
-		},
-	)
-	const data: ApiResponse<string> = await response.json()
-	return data.data
-}
+import { randomRepository } from '@/lib/backend/repository/randomRepository'
 
 export async function SSGDemo() {
-	const randomId = await getData()
+	const randomId = await randomRepository.getRandomId({
+		cache: 'force-cache',
+	})
 
 	return (
 		<Card>

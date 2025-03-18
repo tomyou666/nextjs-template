@@ -18,4 +18,7 @@ export const queryKeys = {
 	payment: {
 		all: ['payment'] as const,
 	},
+	random: {
+		id: ['random', 'id'] as const,
+	},
 } as const

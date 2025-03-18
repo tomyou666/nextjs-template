@@ -128,7 +128,6 @@ export async function submitTextForm(prevState: unknown, formData: FormData) {
 
 // サーバーアクションを定義
 export async function refreshData() {
-	'use server'
 	// ISRの場合に再レンダリングを行う
 	revalidatePath('/dashboard/rendering')
 }

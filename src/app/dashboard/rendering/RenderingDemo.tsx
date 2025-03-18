@@ -20,6 +20,7 @@ export function RenderingDemo() {
 
 	const handleRefresh = async () => {
 		setIsRefreshing(true)
+		// リフレッシュ
 		router.refresh()
 		setTimeout(() => setIsRefreshing(false), 1000)
 	}

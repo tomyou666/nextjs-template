@@ -8,6 +8,20 @@ import { AUTH_CONSTANTS } from '../../share/constants'
 import { logger } from '../../share/logger'
 import { formSchema } from '../../share/schemas'
 
+// Email以外でログインしたい場合
+// ➀ スキーマに追加したいカラム（usernameなど）を追加
+// ➁ Providersに追加したいカラムを追加するようにする
+// // @ts-ignore - カスタムアダプターの作成(Email以外でログインしたい場合)
+// prismaAdapter.createUser = (data) => {
+// 	return prisma.user.create({
+// 		data: {
+// 			name: data.name,
+// 			username: data.username,
+// 			// email関連のフィールドは省略など
+// 		},
+// 	})
+// }
+
 export const authOptions: NextAuthOptions = {
 	adapter: PrismaAdapter(prisma),
 	session: {
@@ -24,6 +38,7 @@ export const authOptions: NextAuthOptions = {
 		CredentialsProvider({
 			name: 'Credentials',
 			credentials: {
+				// 認証で利用するformのフィールドを指定
 				email: { label: 'Email', type: 'email' },
 				password: { label: 'Password', type: 'password' },
 			},
@@ -52,7 +67,7 @@ export const authOptions: NextAuthOptions = {
 					if (!isPasswordValid) {
 						throw new Error('メールアドレスまたはパスワードが間違っています。')
 					}
-
+					// authorize関数の返り値 → jwt コールバック → JWTトークン内容 → セッション情報
 					return {
 						id: user.id,
 						email: user.email,
@@ -61,7 +76,6 @@ export const authOptions: NextAuthOptions = {
 					}
 				} catch (error) {
 					logger.error(error)
-					// エラーメッセージを返すことで、クライアント側でエラーハンドリングが可能になります
 					throw new Error(
 						error instanceof Error ? error.message : 'ログインに失敗しました',
 					)
@@ -71,6 +85,7 @@ export const authOptions: NextAuthOptions = {
 	],
 	callbacks: {
 		session: ({ session, token }) => {
+			// セッションにユーザー情報を追加
 			return {
 				...session,
 				user: {
@@ -80,6 +95,7 @@ export const authOptions: NextAuthOptions = {
 			}
 		},
 		jwt: ({ token, user }) => {
+			// トークンにユーザー情報を追加
 			if (user) {
 				return {
 					...token,

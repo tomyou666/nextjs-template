@@ -4,20 +4,14 @@ import {
 	CardDescription,
 	CardHeader,
 	CardTitle,
-} from '../../../components/ui/card'
+} from '@/components/ui/card'
+import { randomRepository } from '@/lib/backend/repository/randomRepository'
 
 export async function ISRContent() {
-	async function getData() {
-		const response = await fetch(
-			`${process.env.NEXT_PUBLIC_API_URL}/api/random`,
-			{
-				next: { revalidate: 30 }, // 30秒ごとに再検証
-			},
-		)
-		const data: ApiResponse<string> = await response.json()
-		return data.data
-	}
-	const randomId = await getData()
+	const randomId = await randomRepository.getRandomId({
+		next: { revalidate: 30 },
+	})
+
 	return (
 		<Card>
 			<CardHeader>

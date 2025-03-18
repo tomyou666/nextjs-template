@@ -2,41 +2,62 @@
 
 モダンなNext.jsアプリケーション開発のための包括的なテンプレートプロジェクト。
 
-[![Next.js](https://img.shields.io/badge/Next.js-14-black?style=flat&logo=next.js)](https://nextjs.org/)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5-blue?style=flat&logo=typescript)](https://www.typescriptlang.org/)
-[![Prisma](https://img.shields.io/badge/Prisma-5-2D3748?style=flat&logo=prisma)](https://www.prisma.io/)
+[![Next.js](https://img.shields.io/badge/Next.js-15-black?style=flat&logo=next.js)](https://nextjs.org/)
+[![Prisma](https://img.shields.io/badge/Prisma-6-2D3748?style=flat&logo=prisma)](https://www.prisma.io/)
 [![TanStack Query](https://img.shields.io/badge/TanStack_Query-5-FF4154?style=flat&logo=react-query)](https://tanstack.com/query)
+[![Tailwindcss](https://img.shields.io/badge/tailwindcss-3-38BDF8?style=flat&logo=tailwindcss)](https://tailwindcss.com/)
 
 ## 📚 重要なリンク
 
+- [マイグレーション手順](docs/マイグレーション手順.md)
+- [キャッシュとレンダリング](docs/キャッシュとレンダリング.md)
 - [リリースノート](docs/RELEASE.md)
-- [Prismaドキュメント](https://www.prisma.io/docs/)
-- [Next.jsドキュメント](https://nextjs.org/docs)
 
 ## 🚀 プロジェクトの目的
 
-このプロジェクトは、社内プロジェクトのテンプレートとして作成されました。新しいプロジェクトを始める際の基盤として、最新のベストプラクティスと技術スタックを提供することを目的としています。
+このプロジェクトは、社内プロジェクトのテンプレートとして作成されました。新しいプロジェクトを始める際の基盤として、typescript + react + nextjs + prisma + shadui/cn + tailwindcssを利用したベストプラクティスと技術スタックを提供することを目的としています。
 
 - **一貫性のある開発体験**: すべてのプロジェクトで一貫したコード構造とパターンを提供
 - **開発の迅速化**: 共通機能が既に実装されているため、新機能の開発に集中できる
 - **品質の向上**: テスト済みのコンポーネントとパターンを使用することで、品質を確保
 
-**このテンプレートは自由に使用していただけます。改善のためのコミットやプルリクエストも歓迎します！**
+## 🤝 コントリビューション
+
+このテンプレートは自由に使用していただけます。改善のためのコミットやプルリクエストも歓迎します！
 
 ## 🔍 技術選定の理由
+
+### React
+
+Reactは以下の理由から最適な選択肢です：
+
+- フロントエンドのフレームワークとしてはReactが最も人気がある⇒有志のドキュメントやライブラリが充実している
+  - VueよりもReactの方が人気がある
+- JSXという素のJavascriptに近い構文でフロンコードを記述できて学習コストが低い
+  - VueはReactと比べて特有の構文が多く学習コストが高いと言われている
+- フロントエンドのフレームワークとしてはReactが最も人気がある⇒有志のドキュメントやライブラリが充実している
 
 ### Next.js
 
 中規模プロジェクトにおいて、Next.jsは以下の理由から最適な選択肢です：
 
-- **柔軟なレンダリング**: SSR、SSG、ISR、CSRなど、ユースケースに応じた最適なレンダリング方式を選択可能
-- **App Router**: 直感的なルーティングとレイアウトシステム
-- **サーバーコンポーネント**: パフォーマンスとSEOの向上
-- **開発者体験**: HMR、TypeScriptサポート、優れたデバッグツール
-- **エコシステム**: 豊富なプラグインとライブラリ
+- バックエンド、フロントエンドの両方をnextjsで書くことができる
+  - クラサバ間での型の共有化が可能
+- （大規模になるとフロントエンドとバックエンドを分離したほうが良い場面が出てくるので、その場合はNextJS以外のフレームワークを選択することをお勧めします）
+
+NextJSを知っている方は以下のような疑問もあると思います。
+
+- バックエンドとフロントエンドの境界が分かりづらい...
+- レンダリング・キャッシュの仕組みが複雑で分からない...
+- バージョンが変わるごとに書き方が変わって今の書き方が分からない...
+
+上記のおような疑問を解決するために、以下のようなテンプレートを作成しました。
+
+- 最新のバージョン(NextJS 15)の書き方で一通りサンプル付きで紹介
+- レンダリング・キャッシュの仕組みをサンプル付きで紹介
+- バックエンドのフロントエンドを世の中のベストプラクティスに沿ったフォルダ分けをして境界を明確化
 
 ### Prisma
-
 Prismaは現代のORMとして非常に優れており、以下の利点があります：
 
 - **型安全**: TypeScriptとの完全な統合により、型エラーを事前に検出
@@ -45,12 +66,64 @@ Prismaは現代のORMとして非常に優れており、以下の利点があ�
 - **複数のデータベース**: PostgreSQL、MySQL、SQLite、SQL Serverなど、様々なデータベースをサポート
 - **スキーマ駆動開発**: データモデルを中心とした開発アプローチ
 
+一方で、Prismaはマイグレーションやデータベース操作の構文などの多少の学習コストがかかるデメリットがある。
+
+本プロジェクトではPrismaをテンプレート化、ドキュメントとして整備しているので、Prismaを初めて使う方でも問題なく利用できるようになっています。
+
+---
+### ※ ORMのすすめ
+ORMとはPrismaのようなデータベースをオブジェクト指向で操作するためのフレームワークのことです。
+
+バックエンドの開発者でデータベース処理を書く際にORMではなくDBドライバを使って素のSQLを書くことが多い方もいると思います。
+
+しかし、初めてデータベースに触れる方のSQLの理解や、パフォーマンスを出すためなど、素のSQLを書く必要な用途はありますが、個人的には大抵の案件では素のSQL一択で書くような状況はあまりないと思っています。
+
+ORMは学習コストが高い面や、言語・フレームワークが替わる度に取得の必要があるため、苦手意識を持つ方もいらっしゃると思いますが、一度取得できれば開発効率の向上は大きいです。
+
+ORMを使うことで以下のようなメリットがあります。
+- 型安全
+  - 型安全になることによりIDEの補完が効くようになる ⇒ これが大きい。素のSQLより直感的に素早く書くことができるようになる。
+  - フレームワークによってはスキーマからリバースエンジニアリングして型を生成してくれるものもある
+- マイグレーション
+  - マイグレーションを使うことでデータベースのスキーマを管理することができる
+  - 開発途中でスキーマや初期データを変える必要が出てきて開発者間でのやり取りが大変だったことはありませんか？
+  - マイグレーション機能を使うことで、コマンド一つで変更を加えたスキーマを適用することができ、開発者間でのスムーズな変更ができるようになります。
+---
+
 ## 📂 プロジェクト構成
+
+```
+.
+├── docker                   # Dockerコンテナ設定
+│   ├── Dockerfile           # アプリケーションのDockerfile
+│   └── db                   # データベース関連
+│       ├── Dockerfile       # データベースのDockerfile
+│       └── sample.a5er      # データベース設計図
+├── docs                     # ドキュメント
+│   ├── マイグレーション手順.md  # マイグレーションガイド
+│   ├── キャッシュとレンダリング.md # キャッシュとレンダリングガイド
+│   └── RELEASE.md           # リリースノート
+├── logs                     # ログファイル
+├── middleware.ts            # Next.jsミドルウェア設定
+├── next.config.ts           # Next.js設定ファイル
+├── package.json             # 依存関係とスクリプト
+├── prisma                   # Prismaデータベース設定
+│   ├── schema.prisma        # データモデル定義
+│   └── migrations           # データベースマイグレーション
+├── public                   # 静的ファイル
+├── src                      # アプリケーションソースコード
+├── tailwind.config.ts       # Tailwind CSS設定
+├── tests                    # テストファイル
+├── tsconfig.json            # TypeScript設定
+└── vitest.config.mts        # Vitestテスト設定
+```
+
+## 📂 srcプロジェクト構成
 
 ```
 src/
 ├── app/                  # App Router ページとレイアウト
-│   ├── api/              # APIエンドポイント
+│   ├── api/              # APIエンドポイント（バックエンド処理）
 │   ├── dashboard/        # ダッシュボード関連ページ
 │   └── providers.tsx     # グローバルプロバイダー
 ├── components/           # 再利用可能なコンポーネント
@@ -66,119 +139,13 @@ src/
 └── styles/               # グローバルスタイル
 ```
 
-### 実際のプロジェクト構成
-
-以下は`tree`コマンドで取得した実際のプロジェクト構成です（node_modules、.pnpm-store、.nextを除外）：
-
-```
-.
-├── README.md
-├── biome.json
-├── components.json
-├── docker
-│   ├── Dockerfile
-│   └── db
-│       ├── Dockerfile
-│       └── sample.a5er
-├── docs
-│   ├── MIGRATION.md
-│   └── RELEASE.md
-├── logs
-│   └── log.1
-├── middleware.ts
-├── next-env.d.ts
-├── next.config.ts
-├── package.json
-├── playwright.config.ts
-├── pnpm-lock.yaml
-├── postcss.config.mjs
-├── prisma
-│   ├── migrations
-│   │   ├── 20250223074821_init
-│   │   └── migration_lock.toml
-│   └── schema.prisma
-├── public
-│   ├── file.svg
-│   ├── globe.svg
-│   ├── next.svg
-│   ├── vercel.svg
-│   └── window.svg
-├── src
-│   ├── app
-│   │   ├── api
-│   │   ├── dashboard
-│   │   ├── error.tsx
-│   │   ├── favicon.ico
-│   │   ├── global-error.tsx
-│   │   ├── globals.css
-│   │   ├── layout.tsx
-│   │   ├── login
-│   │   ├── page.tsx
-│   │   ├── providers.tsx
-│   │   └── signup
-│   ├── components
-│   │   ├── AlertButtonSample.tsx
-│   │   ├── CheckboxSample.tsx
-│   │   ├── DatePickerSample.tsx
-│   │   ├── EmailInputSample.tsx
-│   │   ├── ErrorButtonSample.tsx
-│   │   ├── GlobalAlert.tsx
-│   │   ├── PasswordInputSample.tsx
-│   │   ├── RadioGroupSample.tsx
-│   │   ├── SelectSample.tsx
-│   │   ├── TextInputSample.tsx
-│   │   ├── TextareaSample.tsx
-│   │   ├── ToastButtonSample.tsx
-│   │   ├── ToastContainer.tsx
-│   │   ├── alert-destructive.tsx
-│   │   ├── app-sidebar.tsx
-│   │   ├── footer.tsx
-│   │   ├── form-samples.tsx
-│   │   ├── header.tsx
-│   │   ├── login-form.tsx
-│   │   ├── markdown-dialog.tsx
-│   │   ├── markdown-help-dialog.tsx
-│   │   ├── mode-toggle.tsx
-│   │   ├── overview.tsx
-│   │   ├── recent-sales.tsx
-│   │   ├── rendering
-│   │   ├── rendering-tabs.tsx
-│   │   ├── search-form.tsx
-│   │   ├── signup-form.tsx
-│   │   ├── theme-provider.tsx
-│   │   ├── ui
-│   │   ├── user-nav.tsx
-│   │   └── version-switcher.tsx
-│   ├── hooks
-│   │   ├── use-mobile.tsx
-│   │   └── use-toast.ts
-│   ├── lib
-│   │   ├── backend
-│   │   ├── frontend
-│   │   ├── prisma.ts
-│   │   ├── share
-│   │   ├── store.ts
-│   │   ├── utils
-│   │   └── utils.ts
-│   └── types
-│       ├── ApiResponse.ts
-│       └── Log.ts
-├── tailwind.config.ts
-├── tests
-│   └── example.spec.ts
-├── tests-examples
-│   └── demo-todo-app.spec.ts
-├── tsconfig.json
-└── vitest.config.mts
-```
-
 ## 🌟 主要機能
 
 - **認証システム**: セキュアなユーザー認証
 - **ダッシュボード**: 管理画面のテンプレート
-- **レンダリングデモ**: 各種レンダリング方式の実装例
+- **レンダリングデモ**: NextJSの各種レンダリング方式の実装例
 - **フォーム処理**: Conformとzodを使用した型安全なフォーム
-- **データテーブル**: TanStack Tableを使用した高機能テーブル
+- **データテーブル**: TanStack Tableを使用した高機能テーブルとuseQueryを使用したデータ取得
 - **状態管理**: Zustandを使用したグローバル状態管理
 - **通知システム**: トースト、アラート、エラーハンドリング
 - **ダークモード**: テーマ切り替え機能
@@ -228,8 +195,8 @@ yarn dev
 
 - `main`: 本番環境用ブランチ
 - `develop`: 開発環境用ブランチ
-- `feature/*`: 新機能開発用ブランチ
-- `bugfix/*`: バグ修正用ブランチ
+- `feature/yyyymmdd/feature-name`: 新機能開発用ブランチ
+- `bugfix/yyyymmdd/bug-name`: バグ修正用ブランチ
 
 ### コミットメッセージ
 
@@ -243,7 +210,7 @@ yarn dev
 
 例：
 ```
-feat(auth): ユーザー登録機能の追加
+feature(auth): ユーザー登録機能の追加
 
 - メールアドレスとパスワードによる登録フォームを実装
 - 確認メール送信機能を追加
@@ -252,16 +219,13 @@ feat(auth): ユーザー登録機能の追加
 
 ## 🤝 貢献方法
 
-1. このリポジトリをフォーク
-2. 新しいブランチを作成 (`git checkout -b feature/amazing-feature`)
-3. 変更をコミット (`git commit -m 'feat: 素晴らしい機能を追加'`)
-4. ブランチにプッシュ (`git push origin feature/amazing-feature`)
-5. プルリクエストを作成
+1. 新しいブランチを作成 (`git checkout -b feature/yyyymmdd/feature-name`)
+2. 変更をコミット (`git commit -m 'feature: 素晴らしい機能を追加'`)
+3. ブランチにプッシュ (`git push origin feature/yyyymmdd/feature-name`)
+4. プルリクエストを作成
 
 ## 📄 ライセンス
 
 このプロジェクトは [MIT License](LICENSE) の下で公開されています。
 
 ---
-
-**Next.JSテンプレート** - モダンなウェブアプリケーション開発のための出発点

@@ -8,47 +8,50 @@ import {
 	CardHeader,
 	CardTitle,
 } from '@/components/ui/card'
-import { useEffect, useReducer, useState } from 'react'
+import { randomRepository } from '@/lib/backend/repository/randomRepository'
+import { queryKeys } from '@/lib/utils/queryKeys'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 
 export function ClientDemo() {
-	const [randomId, setRandomId] = useState<string | null>(null)
-	const [loading, setLoading] = useState(true)
-	const [ignored, forceUpdate] = useReducer((x) => x + 1, 0)
+	const queryClient = useQueryClient()
+
+	// ランダムIDを取得するためのクエリ
+	const { data: randomId, isLoading } = useQuery({
+		queryKey: queryKeys.random.id,
+		queryFn: randomRepository.getRandomId,
+	})
+
+	// 再取得するためのミューテーション
+	const { mutate: getRandomId, isPending: isRefreshing } = useMutation({
+		mutationFn: randomRepository.getRandomId,
+		onSuccess: (newRandomId) => {
+			// 成功したら、キャッシュを更新
+			queryClient.setQueryData(queryKeys.random.id, newRandomId)
+		},
+	})
+
 	function handleClick() {
-		// 強制的に再レンダリングする
-		forceUpdate()
+		// ミューテーションを実行して新しいランダムIDを取得
+		getRandomId(undefined)
 	}
-
-	// biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
-	useEffect(() => {
-		const fetchData = async () => {
-			try {
-				const response = await fetch(
-					`${process.env.NEXT_PUBLIC_API_URL}/api/random`,
-				)
-				const data: ApiResponse<string> = await response.json()
-				setRandomId(data.data ?? null)
-			} catch (error) {
-				console.error('Error fetching random ID:', error)
-			} finally {
-				setLoading(false)
-			}
-		}
-
-		fetchData()
-	}, [ignored])
 
 	return (
 		<Card>
 			<CardHeader>
 				<CardTitle>クライアントサイドレンダリング</CardTitle>
 				<CardDescription>
-					useEffectを使用してクライアントサイドでデータをフェッチします
+					useQueryとuseMutationを使用してデータをフェッチします
 				</CardDescription>
 			</CardHeader>
 			<CardContent>
-				<Button onClick={handleClick}>再描画</Button>
-				{loading ? <p>Loading...</p> : <p className="font-mono">{randomId}</p>}
+				<Button onClick={handleClick} disabled={isRefreshing}>
+					{isRefreshing ? '更新中...' : '再取得'}
+				</Button>
+				{isLoading ? (
+					<p>Loading...</p>
+				) : (
+					<p className="font-mono">{randomId}</p>
+				)}
 			</CardContent>
 		</Card>
 	)

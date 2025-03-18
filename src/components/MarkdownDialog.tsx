@@ -6,9 +6,9 @@ import {
 	DialogTitle,
 } from '@/components/ui/dialog'
 import ReactMarkdown from 'react-markdown'
-import type { CodeProps } from 'react-markdown/lib/ast-to-react'
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter'
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism'
+import remarkGfm from 'remark-gfm'
 
 interface MarkdownDialogProps {
 	title: string
@@ -23,8 +23,10 @@ export function MarkdownDialog({ title, content }: MarkdownDialogProps) {
 			</DialogHeader>
 			<div className="prose prose-sm dark:prose-invert mt-4 max-w-none">
 				<ReactMarkdown
+					remarkPlugins={[remarkGfm]}
 					components={{
-						code(props: CodeProps) {
+						// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+						code(props: any) {
 							const { className, children, ...rest } = props
 							const match = /language-(\w+)/.exec(className || '')
 							return !props.inline && match ? (

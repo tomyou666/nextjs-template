@@ -8,6 +8,13 @@
 [![Tailwindcss](https://img.shields.io/badge/tailwindcss-3-38BDF8?style=flat&logo=tailwindcss)](https://tailwindcss.com/)
 [![NextAuth](https://img.shields.io/badge/NextAuth-4-FF4154?style=flat&logo=nextauth)](https://next-auth.js.org/)
 
+## デプロイURL
+- 実物を下記URLで確認できます。
+
+[https://nextjs-template-pink-six.vercel.app/](https://nextjs-template-pink-six.vercel.app/)
+
+- ログインはGitHubでログインするかアカウントを適当に作成してください。
+
 ## 📚 重要なリンク
 
 - [認証について](docs/認証について.md)
@@ -138,6 +145,8 @@ ORMを使うことで以下のようなメリットがあります。
 │       ├── Dockerfile       # データベースのDockerfile
 │       └── sample.a5er      # データベース設計図
 ├── docs                     # ドキュメント
+│   ├── AI活用について.md    # AI活用について
+│   ├── 認証について.md      # 認証について
 │   ├── マイグレーション手順.md  # マイグレーションガイド
 │   ├── キャッシュとレンダリング.md # キャッシュとレンダリングガイド
 │   └── RELEASE.md           # リリースノート

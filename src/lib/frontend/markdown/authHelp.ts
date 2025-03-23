@@ -1,0 +1,389 @@
+export const authHelpContent = `# Next Authを利用した認証システムの実装
+
+Next Authは、Next.jsアプリケーションに認証機能を簡単に統合できる柔軟な認証ライブラリです。さまざまな認証プロバイダー（GitHub、Google、Twitterなど）をサポートし、JWTやデータベースベースのセッション管理を提供します。
+
+## Next Authとは
+
+Next Authは以下の特徴を持つ認証ライブラリです：
+
+- 複数の認証プロバイダー（OAuth、メール、クレデンシャルなど）をサポート
+- JWT（JSON Web Token）またはデータベースセッションの管理
+- サーバーサイドとクライアントサイドの両方での認証状態の確認
+- 認証フローのカスタマイズが可能
+- TypeScriptをサポート
+
+## 必要な環境設定
+
+### 環境変数の設定
+
+\`.env\`ファイルに以下の設定が必要です：
+
+\`\`\`
+# 必須の環境変数
+DATABASE_URL="postgresql://postgres:postgres@app-db:5432/app-postgres"
+NEXTAUTH_SECRET="VSgbSlxftr93L0DR+ZQ5L5fTVSE/sWMUEfzqodpVHsQ="
+NEXTAUTH_URL="http://localhost:3000"
+
+# GitHubプロバイダーを使用する場合
+AUTH_GITHUB_ID="Ov23liLSxs4mpqxz6Ko4"
+AUTH_GITHUB_SECRET="ce7d6087bf66175b42ad486e9bbea8f4d0e7867b"
+\`\`\`
+
+### GitHubプロバイダーの設定
+
+GitHub OAuth認証を使用する場合は、GitHubのDeveloper Settingsで設定が必要です。
+
+1. GitHubにログインし、Settings > Developer settingsを開く
+2. OAuth Appsを選択し、「New OAuth App」をクリック
+3. アプリケーション情報を入力：
+   - Application name: あなたのアプリ名
+   - Homepage URL: アプリのURL（例: http://localhost:3000）
+   - Authorization callback URL: コールバックURL（例: http://localhost:3000/api/auth/callback/github）
+4. 「Register application」をクリック
+5. 生成されたClient IDとClient Secretを環境変数に設定
+
+参考URL: [GitHub OAuth Apps設定ページ](https://github.com/settings/developers)
+
+## プロジェクト概要
+
+このプロジェクトでは：
+
+- JWT認証とGitHub OAuth認証を組み合わせて使用
+- 認証の設定は\`src/lib/backend/auth/auth.ts\`で定義
+- 保護されたAPIは\`auth\`関数でラッピングして\`/api/protected/\`配下に配置
+- \`middleware.ts\`を使用して認証が必要なルートを保護
+
+## 実装方法
+
+### 1. 必要なパッケージ
+
+プロジェクトには以下のパッケージが含まれています：
+
+\`\`\`json
+// package.json (抜粋)
+{
+  "dependencies": {
+    "@auth/prisma-adapter": "^2.7.4",
+    "bcryptjs": "^2.4.3",
+    "next-auth": "^4.24.11",
+    // ... その他の依存関係
+  }
+}
+\`\`\`
+
+### 2. 認証設定 (src/lib/backend/auth/auth.ts)
+
+\`\`\`typescript
+// src/lib/backend/auth/auth.ts (抜粋)
+import { PrismaAdapter } from '@auth/prisma-adapter'
+import { compare } from 'bcryptjs'
+import type { NextAuthOptions } from 'next-auth'
+import CredentialsProvider from 'next-auth/providers/credentials'
+import GithubProvider from 'next-auth/providers/github'
+import { prisma } from '../../prisma'
+import { AUTH_CONSTANTS } from '../../share/constants'
+
+export const authOptions: NextAuthOptions = {
+  adapter: PrismaAdapter(prisma),
+  session: {
+    strategy: 'jwt',
+    maxAge: AUTH_CONSTANTS.SESSION_MAX_AGE,
+  },
+  providers: [
+    GithubProvider({
+      clientId: process.env.AUTH_GITHUB_ID!,
+      clientSecret: process.env.AUTH_GITHUB_SECRET!,
+    }),
+    CredentialsProvider({
+      // ... 認証ロジック
+    }),
+  ],
+  callbacks: {
+    // ... コールバック設定
+  },
+  pages: {
+    signIn: AUTH_CONSTANTS.LOGIN_PAGE,
+  },
+}
+\`\`\`
+
+### 3. API認証ラッパー (src/lib/backend/auth/apiAuth.ts)
+
+\`\`\`typescript
+// src/lib/backend/auth/apiAuth.ts (抜粋)
+import { getServerSession } from 'next-auth/next'
+import type { NextRequest, NextResponse } from 'next/server'
+import { authOptions } from './auth'
+
+// APIハンドラー関数の型定義
+type HandlerFunction<T> = (req: NextRequest) => Promise<NextResponse<T>>
+
+/**
+ * API認証用のラッパー関数
+ * @param handler - 保護したいAPIハンドラー関数
+ * @returns 認証チェック付きのハンドラー関数
+ */
+export function auth<T>(handler: HandlerFunction<T>): HandlerFunction<T> {
+  return (async (req: NextRequest) => {
+    // NextAuthのセッション情報を取得
+    const session = await getServerSession(authOptions)
+
+    // セッションが存在しない場合は未認証エラーを返す
+    if (!session) {
+      return new Response('Unauthorized', {
+        status: 401,
+      })
+    }
+
+    // 認証済みの場合、元のハンドラーを実行
+    return await handler(req)
+  }) as HandlerFunction<T>
+}
+\`\`\`
+
+### 4. ミドルウェア設定 (src/middleware.ts)
+
+\`\`\`typescript
+// src/middleware.ts (抜粋)
+import withAuth, { type NextRequestWithAuth } from 'next-auth/middleware'
+import { logger } from './lib/share/logger'
+
+export const config = {
+  matcher: [
+    // 全体的な保護
+    '/((?!api|_next/static|_next/image|favicon.ico|login|signup|$).*)',
+    // ダッシュボード配下の保護
+    // '/dashboard/:path*',
+  ],
+}
+
+// 認証以外の処理を行う場合
+export default withAuth(
+  // \`withAuth\` augments your \`Request\` with the user's token.
+  function middleware(req: NextRequestWithAuth) {
+    // 認証以外の処理
+    // logger.debug(req)
+  },
+)
+\`\`\`
+
+### 5. ログインページ (src/app/login/page.tsx)
+
+\`\`\`typescript
+// src/app/login/page.tsx (抜粋)
+import { LoginForm } from '@/app/login/LoginForm'
+import { authOptions } from '@/lib/backend/auth/auth'
+import { getServerSession } from 'next-auth'
+import { redirect } from 'next/navigation'
+
+export default async function LoginPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ callbackUrl?: string }>
+}) {
+  const session = await getServerSession(authOptions)
+  const params = await searchParams
+
+  // ログイン済みの場合、callbackUrlまたはデフォルトのダッシュボードにリダイレクト
+  if (session) {
+    redirect(params.callbackUrl || '/dashboard')
+  }
+
+  return (
+    <div className="flex min-h-svh flex-col items-center justify-center gap-6 bg-muted p-6 md:p-10">
+      <div className="flex w-full max-w-sm flex-col gap-6">
+        <LoginForm callbackUrl={params.callbackUrl} />
+      </div>
+    </div>
+  )
+}
+\`\`\`
+
+### 6. サインアップAPI (src/app/api/auth/signup/route.ts)
+
+\`\`\`typescript
+// src/app/api/auth/signup/route.ts (抜粋)
+import { prisma } from '@/lib/prisma'
+import { logger } from '@/lib/share/logger'
+import { signupSchema } from '@/lib/share/schemas'
+import { hash } from 'bcryptjs'
+import * as jdenticon from 'jdenticon'
+import { nanoid } from 'nanoid'
+import { NextResponse } from 'next/server'
+
+export async function POST(request: Request) {
+  try {
+    const formData = await request.formData()
+    const data = {
+      name: formData.get('name'),
+      email: formData.get('email'),
+      password: formData.get('password'),
+      confirmPassword: formData.get('confirmPassword'),
+    }
+
+    // バリデーション
+    const result = signupSchema.safeParse(data)
+    if (!result.success) {
+      // ... エラーレスポンス
+    }
+
+    // メールアドレスと名前の重複チェック
+    const existingUser = await prisma.user.findFirst({
+      where: {
+        OR: [{ email: data.email as string }, { name: data.name as string }],
+      },
+    })
+
+    // ... ユーザー作成処理
+
+    return NextResponse.json(response, { status: 201 })
+  } catch (error) {
+    // ... エラーハンドリング
+  }
+}
+\`\`\`
+
+## 利用ガイド
+
+### 1. ログイン機能の実装
+
+ログインページは \`src/app/login/page.tsx\` に実装されています。ユーザーがログイン済みの場合は自動的にリダイレクトされます。
+
+LoginFormコンポーネントの実装例:
+
+\`\`\`typescript
+// src/app/login/LoginForm.tsx (抜粋)
+'use client'
+
+import { signIn } from 'next-auth/react'
+import { useState } from 'react'
+
+export function LoginForm({ callbackUrl = '/dashboard' }) {
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+
+  const handleSubmit = async (e) => {
+    e.preventDefault()
+
+    const result = await signIn('credentials', {
+      redirect: false,
+      email,
+      password,
+    })
+
+    if (result?.ok) {
+      window.location.href = callbackUrl
+    }
+  }
+
+  return (
+    <form onSubmit={handleSubmit}>
+      {/* フォーム要素 */}
+    </form>
+  )
+}
+\`\`\`
+
+### 2. サインアップ機能の実装
+
+サインアップAPIは \`src/app/api/auth/signup/route.ts\` に実装されています。フォームデータを受け取り、バリデーション後にユーザーを作成します。
+
+サインアップフォームの実装例:
+
+\`\`\`typescript
+// src/app/signup/SignupForm.tsx (抜粋)
+'use client'
+
+import { useState } from 'react'
+import { useRouter } from 'next/navigation'
+
+export function SignupForm() {
+  const router = useRouter()
+  const [formData, setFormData] = useState({/* フォームデータ */})
+
+  const handleSubmit = async (e) => {
+    e.preventDefault()
+
+    const form = new FormData()
+    Object.entries(formData).forEach(([key, value]) => {
+      form.append(key, value)
+    })
+
+    const response = await fetch('/api/auth/signup', {
+      method: 'POST',
+      body: form,
+    })
+
+    if (response.ok) {
+      router.push('/login?message=アカウントが作成されました')
+    }
+  }
+
+  return (
+    <form onSubmit={handleSubmit}>
+      {/* フォーム要素 */}
+    </form>
+  )
+}
+\`\`\`
+
+### 3. 保護されたAPIの実装
+
+保護されたAPIは \`auth\` 関数でラッピングして実装します:
+
+\`\`\`typescript
+// src/app/api/protected/example/route.ts (抜粋)
+import { auth } from '@/lib/backend/auth/apiAuth'
+import { NextResponse } from 'next/server'
+
+export const GET = auth(async (req) => {
+  // 認証済みユーザーのみアクセス可能
+  return NextResponse.json({
+    message: '認証済みデータ'
+  })
+})
+\`\`\`
+
+### 4. クライアントでの認証状態の利用
+
+クライアントコンポーネントでは \`useSession\` フックを使用して認証状態を取得できます:
+
+\`\`\`typescript
+// src/app/components/AuthStatus.tsx (抜粋)
+'use client'
+
+import { useSession, signOut } from 'next-auth/react'
+
+export function AuthStatus() {
+  const { data: session, status } = useSession()
+
+  if (status === 'loading') {
+    return <div>Loading...</div>
+  }
+
+  if (session) {
+    return (
+      <div>
+        <p>ログイン中: {session.user.name}</p>
+        <button onClick={() => signOut()}>ログアウト</button>
+      </div>
+    )
+  }
+
+  return <div>未ログイン</div>
+}
+\`\`\`
+
+## まとめ
+
+Next Authを使用した認証システムの実装には以下のコンポーネントが必要です：
+
+1. 環境変数の設定 (\`.env\`)
+2. 認証オプションの設定 (\`src/lib/backend/auth/auth.ts\`)
+3. 保護されたAPIのラッパー関数 (\`src/lib/backend/auth/apiAuth.ts\`)
+4. ミドルウェアによるルート保護 (\`src/middleware.ts\`)
+5. ログイン/サインアップ機能の実装
+
+これらのコンポーネントを組み合わせることで、セキュアな認証システムを構築できます。また、Next Authの柔軟性により、さまざまな認証プロバイダーを簡単に追加できます。
+
+`

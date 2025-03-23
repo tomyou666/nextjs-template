@@ -10,6 +10,7 @@ Next.JSテンプレートの初期バージョンをリリースしました。�
 
 - **Next.js 15**: App Routerを使用した最新のNext.jsフレームワーク
 - **TypeScript**: 型安全なコード開発環境
+- **Auth**: 認証機能
 - **UI/UXコンポーネント**:
   - shadcn/uiを使用したモダンなUIコンポーネント
   - ダークモード/ライトモードのサポート
@@ -42,6 +43,7 @@ Next.JSテンプレートの初期バージョンをリリースしました。�
 
 - Next.js 14
 - TypeScript
+- NextAuth
 - TanStack Query & Table
 - Zustand
 - Conform & Zod
@@ -51,6 +53,7 @@ Next.JSテンプレートの初期バージョンをリリースしました。�
 
 ### 今後の予定
 
+- Storybookでテンプレート集を作成
 - ユニットテストの追加
 - E2Eテストの追加
 - サンプルコンポーネントの追加コンポーネント（折り畳みカード、ローディングなど）

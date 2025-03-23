@@ -8,16 +8,6 @@ const logLevel =
 const frontendOrigin = process.env.NEXT_PUBLIC_API_URL
 const logUrl = `${frontendOrigin}/api/log`
 
-// pino-prettyの設定です。
-const DEFAULT_PRETTY_OPTIONS = {
-	colorize: true,
-	translateTime: 'yyyy-mm-dd hh:MM:ss',
-	// ログを同期的に出力
-	sync: true,
-	// オブジェクトを隠さずに表示
-	hideObject: false,
-} as const
-
 export const logger = pino(
 	{
 		level: logLevel,

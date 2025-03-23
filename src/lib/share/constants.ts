@@ -18,7 +18,7 @@ export const LOGGER_CONSTANTS = {
 	PRETTY_OPTIONS: {
 		colorize: true,
 		translateTime: 'yyyy-mm-dd hh:MM:ss',
-		sync: true,
+		sync: false,
 		hideObject: false,
 	} as const,
 	LOG_FILE_PATH: 'logs/log',
@@ -76,7 +76,7 @@ export const ROUTES: Routes = {
 			},
 			error: {
 				path: '/dashboard/error',
-				label: '通知・エラーテスト',
+				label: '通知・エラー・ログテスト',
 			},
 		},
 	},

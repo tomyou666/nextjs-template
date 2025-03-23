@@ -21,4 +21,7 @@ export const queryKeys = {
 	random: {
 		id: ['random', 'id'] as const,
 	},
+	log: {
+		create: ['log', 'create'] as const,
+	},
 } as const

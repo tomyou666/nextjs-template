@@ -1,54 +1,103 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
-generator client {
-  provider = "prisma-client-js"
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model member {
+  id                 Int            @id(map: "member_PKC") @default(autoincrement())
+  member_status_code String?        @db.Char(3)
+  created_at         DateTime?      @default(now())
+  updated_at         DateTime?      @default(now()) @updatedAt
+  member_status      member_status? @relation(fields: [member_status_code], references: [ID], onDelete: NoAction, onUpdate: NoAction, map: "member_FK1")
+  purchace           purchace[]
 }
 
-model Account {
-  id                String  @id @default(cuid())
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model member_status {
+  ID                 String    @id(map: "member_status_PKC") @db.Char(3)
+  MEMBER_STATUS_NAME String?   @db.VarChar(50)
+  created_at         DateTime? @default(now())
+  updated_at         DateTime? @default(now()) @updatedAt
+  member             member[]
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model purchace {
+  id         Int       @id(map: "purchace_PKC") @default(autoincrement())
+  member_id  Int?
+  created_at DateTime? @default(now())
+  updated_at DateTime? @default(now()) @updatedAt
+  member     member?   @relation(fields: [member_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "purchace_FK1")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model account {
+  id                String    @id(map: "account_PKC") @default(cuid())
   userId            String
   type              String
   provider          String
   providerAccountId String
-  refresh_token     String? @db.Text
-  access_token      String? @db.Text
+  refresh_token     String?
+  access_token      String?
   expires_at        Int?
   token_type        String?
   scope             String?
-  id_token          String? @db.Text
+  id_token          String?
   session_state     String?
+  created_at        DateTime? @default(now())
+  updated_at        DateTime? @default(now()) @updatedAt
+  user              user      @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "account_FK1")
 
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@unique([provider, providerAccountId])
+  @@unique([provider, providerAccountId], map: "Account_provider_providerAccountId_key")
 }
 
-model Session {
-  id           String   @id @default(cuid())
-  sessionToken String   @unique
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model session {
+  id           String    @id(map: "session_PKC") @default(cuid())
+  sessionToken String    @unique(map: "Session_sessionToken_key")
   userId       String
   expires      DateTime
-  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  created_at   DateTime? @default(now())
+  updated_at   DateTime? @default(now()) @updatedAt
+  user         user      @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "session_FK1")
 }
 
-model User {
-  id            String    @id @default(cuid())
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model user {
+  id            String    @id(map: "user_PKC") @default(cuid())
   name          String?
-  email         String?   @unique
+  email         String?   @unique(map: "User_email_key")
   emailVerified DateTime?
   password      String?
   image         String?
-  accounts      Account[]
-  sessions      Session[]
+  created_at    DateTime? @default(now())
+  updated_at    DateTime? @default(now()) @updatedAt
+  account       account[]
+  session       session[]
 }
 
-model VerificationToken {
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model verificationToken {
   identifier String
-  token      String   @unique
+  token      String    @unique(map: "VerificationToken_token_key")
   expires    DateTime
+  created_at DateTime? @default(now())
+  updated_at DateTime? @default(now()) @updatedAt
 
-  @@unique([identifier, token])
+  @@unique([identifier, token], map: "VerificationToken_identifier_token_key")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model payment {
+  id         Int       @id(map: "payment_PKC") @unique(map: "payment_IX1") @default(autoincrement())
+  status     String?   @db.VarChar(50)
+  email      String?   @db.VarChar(50)
+  amount     Float?
+  created_at DateTime? @default(now())
+  updated_at DateTime? @default(now()) @updatedAt
 }

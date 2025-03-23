@@ -1,16 +1,18 @@
-﻿# A5:ER FORMAT:18
+﻿# A5:ER FORMAT:19
 # A5:ER ENCODING:UTF8
 # A5:ER Mk-1 Copyright © 2007 m.matsubara
-# A5:SQL Mk-2 Version 2.19.2 Copyright © 1997 - 2024 m.matsubara
+# A5:SQL Mk-2 Version 2.20.2 Copyright © 1997 - 2025 m.matsubara
 #  https://a5m2.mmatsubara.com
 
 [Manager]
-ProjectName=sample2
+ProjectName=sample
 Author=
 MaxEntityRowShow=1000
 ReadOnlyRecommend=0
 Page=Main
 PageInfo="Main",2,"A3Landscape",$FFFFFF
+Page=認証
+PageInfo="認証",2,"A3Landscape",$FFDDDD
 LogicalView=1
 DecodeDomain=0
 ViewModePageIndividually=1
@@ -31,6 +33,11 @@ RDBMSType=7
 RDBMSTypeName=PostgreSQL
 GenerateDropTableStatement=1
 DropTableIfExists=1
+BackupRestoreTempTable=0
+ForceQuoteIdentifier=1
+CreateFk=1
+CommonField="作成日時","created_at","TIMESTAMP(3)",,,"CURRENT_TIMESTAMP","",$FFFFFFFF
+CommonField="更新日時","updated_at","TIMESTAMP(3)",,,"CURRENT_TIMESTAMP","",$FFFFFFFF
 DefaultPkName=%0:s_PKC
 DefaultPkIndexName=%0:s_PKI
 DefaultIndexName=%0:s_IX%1:d
@@ -38,69 +45,73 @@ DefaultFkName=%0:s_FK%1:d
 SqlSeparator=0
 UpperCaseKeyword=0
 ShowTag=1
-ShowCommonAttributes=0
+ShowCommonAttributes=1
 BugFixEntityWidth=1
+
+[Entity]
+PName=payment
+LName=支払情報
+Comment=
+TableInnerOption=
+TableOption=
+Page=MAIN
+Left=1600
+Top=650
+Field="ID","id","serial","NOT NULL",0,"","",$FFFFFFFF,""
+Field="ステータス","status","@VARCHAR(50)",,,"","",$FFFFFFFF,""
+Field="Eメール","email","@VARCHAR(50)",,,"","",$FFFFFFFF,""
+Field="料金","amount","@DOUBLE",,,"","",$FFFFFFFF,""
+Index==2,id
+EffectMode=None
+Color=$000000
+BkColor=$FFFFFF
+ModifiedDateTime=20250224042729
+Position="MAIN",1600,650
+ZOrder=3
 
 [Relation]
 Entity1=member_status
 Entity2=member
-RelationType1=1
+RelationType1=2
 RelationType2=3
 Fields1=ID
-Fields2=MEMBER_STATUS_CODE
+Fields2=member_status_code
 Cardinarity1=
 Cardinarity2=
-Position="MAIN",0,3725,4756,10000,R,R,""
+Position="MAIN",0,3725,4756,7665,R,R,""
 Dependence=0
 Caption=
 PName=
-ModifiedDateTime=20221223195925
+ModifiedDateTime=20250223171049
 LineMode=0
 Bar1=372
 Bar2=476
-Bar3=1000
+Bar3=766
 TermPos1=R
 TermPos2=R
-ZOrder=12
+ZOrder=2
 
 [Relation]
 Entity1=member
 Entity2=purchace
-RelationType1=1
+RelationType1=2
 RelationType2=3
 Fields1=id
-Fields2=MEMBER_ID
+Fields2=member_id
 Cardinarity1=
 Cardinarity2=
 Position="MAIN",0,4798,5521,5809,R,R,""
 Dependence=0
 Caption=
 PName=
+ModifiedDateTime=20250223171220
 LineMode=0
 Bar1=480
 Bar2=552
 Bar3=581
 TermPos1=R
 TermPos2=R
-ZOrder=3
-
-[Entity]
-PName=member_status
-LName=会員ステータス
-Comment=
-TableInnerOption=
-TableOption=
-Page=MAIN
-Left=1200
-Top=900
-Field="ID","ID","@CHAR(3)","NOT NULL",0,""," 会員ステータスを識別するコード。",$FFFFFFFF,""
-Field="会員ステータス名称","MEMBER_STATUS_NAME","@VARCHAR(50)",,,"","",$FFFFFFFF,""
-EffectMode=None
-Color=$000000
-BkColor=$FFFFFF
-ModifiedDateTime=20250103015448
-Position="MAIN",1200,900
-ZOrder=26
+ZOrder=1
 
 [Entity]
 PName=member
@@ -109,37 +120,34 @@ Comment= 会員登録時にデータが登録される。基本的に物理削�
 TableInnerOption=
 TableOption=
 Page=MAIN
-Left=1700
-Top=750
+Left=1750
+Top=800
 Field="ID","id","serial","NOT NULL",0,""," 会員を識別するID。連番として基本的に自動採番される。（会員IDだけに限らず）採番方法はDBMSによって変わる。",$FFFFFFFF,""
 Field="会員ステータスコード","member_status_code","@CHAR(3)",,,"","",$FFFFFFFF,""
-Index=FK_MEMBER_MEMBER_STATUS=0,MEMBER_STATUS_CODE
 EffectMode=None
 Color=$000000
 BkColor=$FFFFFF
-ModifiedDateTime=20250103015438
-Position="MAIN",1700,750
-ZOrder=31
+ModifiedDateTime=20250223163137
+Position="MAIN",1750,800
+ZOrder=6
 
 [Entity]
-PName=table_info
-LName=テーブル情報
-Comment=テーブル情報
+PName=member_status
+LName=会員ステータス
+Comment=
 TableInnerOption=
 TableOption=
 Page=MAIN
-Left=1550
-Top=600
-Field="ID","ID","@INT","NOT NULL",0,"","",$FFFFFFFF,""
-Field="ステータス","status","@VARCHAR(50)",,,"","",$FFFFFFFF,""
-Field="Eメール","email","@VARCHAR(50)",,,"","",$FFFFFFFF,""
-Field="料金","amount","@DOUBLE",,,"","",$FFFFFFFF,""
+Left=1250
+Top=950
+Field="ID","ID","@CHAR(3)","NOT NULL",0,""," 会員ステータスを識別するコード。",$FFFFFFFF,""
+Field="会員ステータス名称","MEMBER_STATUS_NAME","@VARCHAR(50)",,,"","",$FFFFFFFF,""
 EffectMode=None
 Color=$000000
 BkColor=$FFFFFF
-ModifiedDateTime=20250103015524
-Position="MAIN",1550,600
-ZOrder=19
+ModifiedDateTime=20250103015448
+Position="MAIN",1250,950
+ZOrder=5
 
 [Entity]
 PName=purchace
@@ -148,16 +156,151 @@ Comment= 一つの商品に対する一回の購入を表現する。一回の�
 TableInnerOption=
 TableOption=
 Page=MAIN
-Left=2100
-Top=800
+Left=2150
+Top=850
 Field="ID","id","serial","NOT NULL",0,""," 連番",$FFFFFFFF,""
 Field="会員ID","member_id","@INT",,,""," 会員を参照するID。購入を識別する自然キー（複合ユニーク制約）の筆頭要素。",$FFFFFFFF,""
-Index=PURCHASE_MEMBER_ID=2,MEMBER_ID
-Index=MEMBER_ID_2=0,MEMBER_ID
-Index=IX_PURCHASE_DATETIME_MEMBER=0,MEMBER_ID
 EffectMode=None
 Color=$000000
 BkColor=$FFFFFF
-ModifiedDateTime=20250103015456
-Position="MAIN",2100,800
-ZOrder=21
+ModifiedDateTime=20250223163343
+Position="MAIN",2150,850
+ZOrder=4
+
+[Entity]
+PName=user
+LName=ユーザ
+Comment=
+TableInnerOption=
+TableOption=
+Page=認証
+Left=1650
+Top=550
+Field="id","id","text","NOT NULL",0,"","",$FFFFFFFF,""
+Field="名前","name","text",,,"","",$FFFFFFFF,""
+Field="メール","email","text",,,"","",$FFFFFFFF,""
+Field="メール認証","emailVerified","timestamp(3) without time zone",,,"","",$FFFFFFFF,""
+Field="パスワード","password","text",,,"","",$FFFFFFFF,""
+Field="画像","image","text",,,"","",$FFFFFFFF,""
+Index=User_email_key=1,email
+EffectMode=None
+Color=$000000
+BkColor=$FFFFFF
+ModifiedDateTime=20250223171724
+Position="認証",1650,550
+ZOrder=10
+
+[Entity]
+PName=session
+LName=セッション
+Comment=
+TableInnerOption=
+TableOption=
+Page=認証
+Left=1650
+Top=850
+Field="id","id","text","NOT NULL",0,"","",$FFFFFFFF,""
+Field="セッショントークン","sessionToken","text","NOT NULL",,"","",$FFFFFFFF,""
+Field="ユーザID","userId","text","NOT NULL",,"","",$FFFFFFFF,""
+Field="有効期限","expires","timestamp(3) without time zone","NOT NULL",,"","",$FFFFFFFF,""
+Index=Session_sessionToken_key=1,sessionToken
+EffectMode=None
+Color=$000000
+BkColor=$FFFFFF
+ModifiedDateTime=20250223171732
+Position="認証",1650,850
+ZOrder=11
+
+[Entity]
+PName=account
+LName=アカウント
+Comment=
+TableInnerOption=
+TableOption=
+Page=認証
+Left=1350
+Top=550
+Field="id","id","text","NOT NULL",0,"","",$FFFFFFFF,""
+Field="ユーザID","userId","text","NOT NULL",,"","",$FFFFFFFF,""
+Field="認証タイプ","type","text","NOT NULL",,"","",$FFFFFFFF,""
+Field="プロバイダ","provider","text","NOT NULL",,"","",$FFFFFFFF,""
+Field="プロパイダアカウントID","providerAccountId","text","NOT NULL",,"","",$FFFFFFFF,""
+Field="リフレッシュトークン","refresh_token","text",,,"","",$FFFFFFFF,""
+Field="アクセストークン","access_token","text",,,"","",$FFFFFFFF,""
+Field="有効期限","expires_at","integer",,,"","",$FFFFFFFF,""
+Field="トークンタイプ","token_type","text",,,"","",$FFFFFFFF,""
+Field="スコープ","scope","text",,,"","",$FFFFFFFF,""
+Field="IDトークン","id_token","text",,,"","",$FFFFFFFF,""
+Field="セッション状態","session_state","text",,,"","",$FFFFFFFF,""
+Index=Account_provider_providerAccountId_key=1,provider,providerAccountId
+EffectMode=None
+Color=$000000
+BkColor=$FFFFFF
+ModifiedDateTime=20250223171641
+Position="認証",1350,550
+ZOrder=12
+
+[Relation]
+Entity1=user
+Entity2=session
+RelationType1=2
+RelationType2=3
+Fields1=id
+Fields2=userId
+Cardinarity1=
+Cardinarity2=
+Position="認証",0,8518,5351,1627,R,R,""
+Dependence=0
+Caption=
+PName=
+ModifiedDateTime=20250223170247
+LineMode=0
+Bar1=852
+Bar2=535
+Bar3=163
+TermPos1=R
+TermPos2=R
+ZOrder=7
+
+[Relation]
+Entity1=user
+Entity2=account
+RelationType1=2
+RelationType2=3
+Fields1=id
+Fields2=userId
+Cardinarity1=
+Cardinarity2=
+Position="認証",0,300,6700,6744,R,R,""
+Dependence=0
+Caption=
+PName=
+ModifiedDateTime=20250223170156
+LineMode=0
+Bar1=30
+Bar2=670
+Bar3=674
+TermPos1=R
+TermPos2=R
+ZOrder=8
+
+[Entity]
+PName=verificationToken
+LName=認証トークン
+Comment=
+TableInnerOption=
+TableOption=
+Page=認証
+Left=1800
+Top=550
+Field="識別子","identifier","text","NOT NULL",,"","",$FFFFFFFF,""
+Field="トークン","token","text","NOT NULL",,"","",$FFFFFFFF,""
+Field="有効期限","expires","timestamp(3) without time zone","NOT NULL",,"","",$FFFFFFFF,""
+Index=VerificationToken_identifier_token_key=1,identifier,token
+Index=VerificationToken_token_key=1,token
+EffectMode=None
+Color=$000000
+BkColor=$FFFFFF
+ModifiedDateTime=20250223171742
+Position="認証",1800,550
+ZOrder=9

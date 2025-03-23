@@ -3,9 +3,9 @@ import type { Config } from 'tailwindcss'
 export default {
 	darkMode: ['class'],
 	content: [
-		'./pages/**/*.{js,ts,jsx,tsx,mdx}',
-		'./components/**/*.{js,ts,jsx,tsx,mdx}',
-		'./app/**/*.{js,ts,jsx,tsx,mdx}',
+		'./src/pages/**/*.{js,ts,jsx,tsx,mdx}',
+		'./src/components/**/*.{js,ts,jsx,tsx,mdx}',
+		'./src/app/**/*.{js,ts,jsx,tsx,mdx}',
 	],
 	theme: {
 		extend: {
@@ -41,6 +41,14 @@ export default {
 					DEFAULT: 'hsl(var(--destructive))',
 					foreground: 'hsl(var(--destructive-foreground))',
 				},
+				success: {
+					DEFAULT: 'hsl(var(--success))',
+					foreground: 'hsl(var(--success-foreground))',
+				},
+				warning: {
+					DEFAULT: 'hsl(var(--warning))',
+					foreground: 'hsl(var(--warning-foreground))',
+				},
 				border: 'hsl(var(--border))',
 				input: 'hsl(var(--input))',
 				ring: 'hsl(var(--ring))',
@@ -59,5 +67,5 @@ export default {
 			},
 		},
 	},
-	plugins: [require('tailwindcss-animate')],
+	plugins: [require('tailwindcss-animate'), require('@tailwindcss/typography')],
 } satisfies Config

@@ -25,8 +25,8 @@ NEXTAUTH_SECRET="VSgbSlxftr93L0DR+ZQ5L5fTVSE/sWMUEfzqodpVHsQ="
 NEXTAUTH_URL="http://localhost:3000"
 
 # GitHubプロバイダーを使用する場合
-AUTH_GITHUB_ID="Ov23liLSxs4mpqxz6Ko4"
-AUTH_GITHUB_SECRET="ce7d6087bf66175b42ad486e9bbea8f4d0e7867b"
+AUTH_GITHUB_ID="client-id"
+AUTH_GITHUB_SECRET="secret-id"
 \`\`\`
 
 ### GitHubプロバイダーの設定

@@ -37,7 +37,7 @@ export function SignupForm({
 		try {
 			// ここでサインアップのAPIを呼び出す
 			const response = await fetch(
-				`${process.env.NEXT_PUBLIC_API_URL}/api/signup`,
+				`${process.env.NEXT_PUBLIC_API_URL}/api/auth/signup`,
 				{
 					method: 'POST',
 					body: formData,

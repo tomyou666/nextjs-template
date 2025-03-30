@@ -22,7 +22,7 @@
 - [認証について](docs/認証について.md)
 - [キャッシュとレンダリング](docs/キャッシュとレンダリング.md)
 - [マイグレーション手順](docs/マイグレーション手順.md)
-
+- [テストについて](docs/テストについて.md)
 ## 🚀 プロジェクトの目的
 
 ### 1, プロジェクトテンプレート
@@ -69,6 +69,7 @@
 | Conform | 1 | フォームバリデーションライブラリ |
 | Biome | 1 | リンター・フォーマッター |
 | Vitest | 2 | JavaScript/TypeScriptテストフレームワーク |
+| Playwright | 1 | ブラウザ操作テストフレームワーク |
 
 ## 🔍 技術選定の理由
 
@@ -162,6 +163,8 @@ ORMを使うことで以下のようなメリットがあります。
 ├── src                      # アプリケーションソースコード
 ├── tailwind.config.ts       # Tailwind CSS設定
 ├── tests                    # テストファイル
+│   ├── e2e                  # ブラウザ操作テスト
+│   └── unit                 # ユニットテスト
 ├── tsconfig.json            # TypeScript設定
 └── vitest.config.mts        # Vitestテスト設定
 ```

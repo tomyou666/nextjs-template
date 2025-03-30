@@ -47,6 +47,7 @@ node_modules/
 /blob-report/
 /playwright/.cache/
 /screenshot/
+/test-results/
 
 # etc
 /logs

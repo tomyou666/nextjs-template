@@ -15,17 +15,19 @@ pnpm dlx shadcn-ui@latest add card
 # 変更後
 pnpm dlx shadcn@latest add card
 ```
-1. `src/app/sample/pages.tsx`などで、そのページ専用のコンポーネントの場合は直接`src/app/sample/`フォルダ配下に直接作成してください。
-2. 共通コンポーネントは`src/components/`フォルダ配下に作成してください。
-3. コンポーネントファイル名はパスカル記法で命名してください。
-4. tsファイル名はキャメル記法で命名してください。
+2. `src/app/sample/pages.tsx`などで、そのページ専用のコンポーネントの場合は直接`src/app/sample/`フォルダ配下に直接作成してください。
+3. 共通コンポーネントは`src/components/`フォルダ配下に作成してください。
+4. コンポーネントファイル名はパスカル記法で命名してください。
+5. tsファイル名はキャメル記法で命名してください。
+6. ユーザにページや機能を作成・追加して言われたら基本的には`src/app/dashboard/*/`に追加してください。
 
 ## コンポーネント設計
 
 1. コンポーネントは`src/components`ディレクトリに配置
 2. 各コンポーネントは独自のディレクトリを作成し、関連ファイルをまとめる
-3. コンポーネントのpropsはTypeScriptの型定義を必ず行う
-4. スタイリングはTailwind CSSを使用
+3. UIコンポーネントは`shadcn/ui`を使用してください
+4. コンポーネントのpropsはTypeScriptの型定義を必ず行う
+5. スタイリングはTailwind CSSを使用
 
 ## 状態管理・クエリ・ミューテーション
 

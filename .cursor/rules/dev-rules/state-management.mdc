@@ -1,0 +1,137 @@
+---
+description: 状態管理について
+globs: 
+alwaysApply: false
+---
+# 状態管理について
+
+## 状態管理の基本方針
+
+このプロジェクトでは、以下の状態管理のアプローチを採用しています：
+
+1. **Zustand** - グローバル状態管理
+2. **React Query** - サーバー状態管理
+3. **React Hooks** - コンポーネントローカル状態
+
+## 状態管理の種類と使い分け
+
+### 1. グローバル状態（Zustand）
+
+グローバル状態は`src/lib/store.ts`で管理され、以下のような場合に使用します：
+
+- アプリケーション全体で共有される状態
+- 複数のコンポーネント間で共有される状態
+- 永続化が必要な状態
+
+```typescript
+// グローバルストアの例
+import { create } from 'zustand'
+
+type GlobalState = {
+  isLoading: boolean
+  setIsLoading: (loading: boolean) => void
+}
+
+export const useGlobalStore = create<GlobalState>((set) => ({
+  isLoading: false,
+  setIsLoading: (loading) => set({ isLoading: loading }),
+}))
+```
+
+### 2. サーバー状態（React Query）
+
+サーバー状態は`src/lib/query`で管理され、以下のような場合に使用します：
+
+- APIからのデータフェッチ
+- キャッシュ管理
+- データの再検証
+- 楽観的更新
+
+```typescript
+// React Queryの使用例
+const { data, isLoading } = useQuery({
+  queryKey: ['todos'],
+  queryFn: fetchTodos,
+})
+```
+
+### 3. コンポーネントローカル状態（React Hooks）
+
+コンポーネントローカル状態は以下のような場合に使用します：
+
+- コンポーネント固有のUI状態
+- フォームの状態
+- 一時的な状態
+
+```typescript
+// ローカル状態の例
+const [isOpen, setIsOpen] = useState(false)
+```
+
+## 状態管理のベストプラクティス
+
+1. **適切な状態の選択**
+   - グローバル状態は必要な場合のみ使用
+   - コンポーネントローカル状態を優先
+   - サーバー状態はReact Queryを使用
+
+2. **型安全性の確保**
+   - すべての状態にTypeScriptの型定義を付与
+   - ストアの型定義を明確に
+
+3. **パフォーマンスの最適化**
+   - 必要な状態のみを選択的に購読
+   - メモ化を活用（useMemo, useCallback）
+   - 不要な再レンダリングを防ぐ
+
+4. **状態の分割**
+   - 関連する状態をグループ化
+   - 大きな状態を小さな単位に分割
+
+## 実装例
+
+### アラート管理
+
+```typescript
+// src/lib/store.ts
+type AlertState = {
+  alertType: AlertType
+  alertMessage: string
+  showAlert: (type: AlertType, message: string) => void
+  hideAlert: () => void
+}
+
+export const useAlertStore = create<AlertState>((set) => ({
+  alertType: null,
+  alertMessage: '',
+  showAlert: (type, message) => set({ alertType: type, alertMessage: message }),
+  hideAlert: () => set({ alertType: null, alertMessage: '' }),
+}))
+```
+
+### フォーム状態管理
+
+```typescript
+// フォームコンポーネント
+const [form, fields] = useForm({
+  onValidate({ formData }) {
+    return parseWithZod(formData, { schema: formSchema })
+  },
+  shouldValidate: 'onBlur',
+})
+```
+
+## 注意事項
+
+1. グローバル状態の乱用を避ける
+2. 状態の更新は一貫性を保つ
+3. 非同期処理の状態管理に注意
+4. パフォーマンスを考慮した状態設計
+
+## ファイル参照
+
+- グローバルストアの実装: [src/lib/store.ts](mdc:src/lib/store.ts)
+- フォーム状態管理の例: [src/app/dashboard/forms/TextInputSample.tsx](mdc:src/app/dashboard/forms/TextInputSample.tsx)
+- テーブル状態管理の例: [src/app/dashboard/table/page.tsx](mdc:src/app/dashboard/table/page.tsx)
+- サイドバー状態管理: [src/components/ui/sidebar.tsx](mdc:src/components/ui/sidebar.tsx)
+- 設定ページの状態管理: [src/app/dashboard/settings/page.tsx](mdc:src/app/dashboard/settings/page.tsx)

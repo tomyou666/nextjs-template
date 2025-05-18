@@ -1,0 +1,143 @@
+---
+description: キャッシュとレンダリングの実装ルール
+globs: 
+alwaysApply: false
+---
+# キャッシュとレンダリングの実装ルール
+
+## キャッシュの種類と使用方法
+
+### 1. Request Memoization
+同一リクエスト内での重複データフェッチを防止します。
+
+```typescript
+// 同一リクエスト内で同じデータを複数回取得する場合
+const data = await fetch('https://api.example.com/data')
+// 自動的にメモ化され、重複フェッチを防止
+```
+
+### 2. Data Cache
+データフェッチの結果を保存します。
+
+```typescript
+// キャッシュを無効化
+const data = await fetch('https://api.example.com/data', { 
+  cache: 'no-store' 
+})
+
+// 強制キャッシュ
+const data = await fetch('https://api.example.com/data', { 
+  cache: 'force-cache' 
+})
+
+// 再検証期間の設定
+const data = await fetch('https://api.example.com/data', { 
+  next: { revalidate: 10 } 
+})
+```
+
+### 3. Full Route Cache
+レンダリング済みルート全体を保存します。
+
+```typescript
+// 動的レンダリングを強制（SSR）
+export const dynamic = 'force-dynamic'
+
+// 再検証期間の設定（ISR）
+export const revalidate = 10
+```
+
+### 4. Router Cache
+クライアント側でのナビゲーションを高速化します。
+
+```typescript
+// Linkコンポーネントで自動的にプリフェッチ
+import Link from 'next/link'
+
+<Link href="/dashboard">ダッシュボード</Link>
+```
+
+## レンダリング方式の選択
+
+### 1. クライアントサイドレンダリング（CSR）
+動的なコンポーネントやインタラクティブな要素に使用します。
+
+```typescript
+'use client'
+
+// クライアントコンポーネントの実装例
+export function ClientComponent() {
+  const [state, setState] = useState()
+  // ...
+}
+```
+
+### 2. サーバーサイドレンダリング（SSR）
+動的なデータが必要なページに使用します。
+
+```typescript
+// 動的レンダリングを強制
+export const dynamic = 'force-dynamic'
+
+// または、Dynamic APIsを使用
+import { cookies } from 'next/headers'
+
+export default async function Page() {
+  const cookieStore = cookies()
+  // ...
+}
+```
+
+### 3. 静的生成（SSG）
+静的なコンテンツに使用します。
+
+```typescript
+// デフォルトでSSG
+export default function Page() {
+  return <div>静的なコンテンツ</div>
+}
+```
+
+### 4. インクリメンタル静的再生成（ISR）
+定期的に更新が必要な静的なコンテンツに使用します。
+
+```typescript
+// 再検証期間の設定
+export const revalidate = 10
+
+// または、fetchオプションで設定
+const data = await fetch('https://api.example.com/data', {
+  next: { revalidate: 10 }
+})
+```
+
+## 実装ガイドライン
+
+### 1. レンダリング方式の選択基準
+- CSR: インタラクティブな要素、クライアントサイドの状態管理
+- SSR: 動的なデータ、認証が必要なページ
+- SSG: 静的なコンテンツ、パフォーマンスが重要なページ
+- ISR: 定期的な更新が必要な静的なコンテンツ
+
+### 2. キャッシュの使用基準
+- Request Memoization: 同一リクエスト内の重複フェッチ防止
+- Data Cache: 頻繁に変更されないデータ
+- Full Route Cache: 静的なページ、ISRページ
+- Router Cache: クライアントサイドナビゲーション
+
+### 3. パフォーマンス最適化
+- 適切なレンダリング方式の選択
+- キャッシュの効果的な活用
+- 不要な再レンダリングの防止
+- プリフェッチの活用
+
+### 4. 気を付けること
+- 今のNextjsのバージョンではデフォルトではSSGが適用されます。
+
+## ファイル参照
+- レンダリングデモ: [src/app/dashboard/rendering/page.tsx](mdc:src/app/dashboard/rendering/page.tsx)
+- CSR: [src/app/dashboard/rendering/ClientDemo.tsx](mdc:src/app/dashboard/rendering/ClientDemo.tsx) 
+- ISRデモ: [IsrDemoContent.tsx](mdc:src/app/dashboard/rendering/IsrDemoContent.tsx) 
+- SSRデモ: [SsrDemo.tsx](mdc:src/app/dashboard/rendering/SsrDemo.tsx) 
+- SSGでも: [SsgDemo.tsx](mdc:src/app/dashboard/rendering/SsgDemo.tsx) 
+- キャッシュ設定: [src/lib/share/constants.ts](mdc:src/lib/share/constants.ts) 

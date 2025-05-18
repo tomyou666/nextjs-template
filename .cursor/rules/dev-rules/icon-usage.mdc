@@ -1,0 +1,72 @@
+---
+description: アイコンの使用ガイドライン
+globs: 
+alwaysApply: false
+---
+# アイコン使用ガイドライン
+
+## 概要
+このプロジェクトでは、主に2つの方法でアイコンを実装しています：
+1. Lucide Reactライブラリを使用
+2. SVGを直接指定
+
+## Lucide Reactの使用方法
+
+### 基本的な使用方法
+```typescript
+import { Moon, Sun } from 'lucide-react'
+
+// コンポーネント内での使用
+<Sun className="h-4 w-4" />
+<Moon className="h-4 w-4" />
+```
+
+### スタイリング
+- サイズ指定: `className="h-4 w-4"`
+- 色指定: `className="text-muted-foreground"`
+- アニメーション: `className="rotate-0 scale-100 transition-all"`
+
+## 直接SVGの使用方法
+
+- アイコンを参照して`<svg><path/><svg/>`で直接指定しています。
+- アイコン一覧は`https://icons.getbootstrap.com/`を参照してください
+
+```typescript
+// src/app/dashboard/page.tsx
+<svg
+...
+>
+  <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+</svg>
+```
+
+## ベストプラクティス
+
+1. アイコンの選択基準
+   - 一般的なUIアイコン → Lucide Reactを使用
+   - カスタムアイコン → 直接SVGを記述
+
+2. アクセシビリティ
+   - `aria-labelledby`と`role="img"`を適切に設定
+   - アイコンに`title`要素を追加して説明を提供
+
+3. スタイリング
+   - サイズは`h-4 w-4`を基準に調整
+   - 色は`text-muted-foreground`などのテーマカラーを使用
+   - アニメーションは`transition-all`を活用
+
+4. パフォーマンス
+   - 頻繁に使用するアイコンはLucide Reactを使用
+   - 大きなSVGは最適化してから使用
+
+## 注意点
+
+- SVGの直接指定は必要な場合のみ使用
+- アイコンのサイズは一貫性を保つ
+- ダークモード対応を考慮する
+- アクセシビリティを常に意識する
+
+## 参照ファイル一覧
+
+- [MarkDownHelpDIalog.tsx](mdc:src/components/MarkDownHelpDIalog.tsx) - lucide-react使用例
+- [page.tsx](mdc:src/app/dashboard/page.tsx) - SVGを直接指定使用例

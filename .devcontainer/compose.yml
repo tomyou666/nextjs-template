@@ -1,6 +1,6 @@
 services:
-  app:
-    container_name: "app-server"
+  vibe-coding:
+    container_name: "vibe-coding-server"
     # Dockerfileがあるpath、dockerfile名を指示
     build:
       context: ../docker
@@ -10,13 +10,13 @@ services:
       - db
     volumes:
       # devcontainerのworkspacesにマウント
-      - ..:/workspaces/app-server:cached
+      - ..:/workspaces/vibe-coding:cached
     # コンテナ切断をしないように指示
     command:
       /bin/sh -c "while sleep 1000; do :; done"
       /bin/bash
   db:
-    container_name: app-db
+    container_name: vibe-coding-db
     # DB用のDockerfile指定
     build:
       context: ../docker/db
@@ -29,13 +29,13 @@ services:
       - "5432:5432"
     volumes:
       # - ../docker/db/sql:/docker-entrypoint-initdb.d
-      - app-db-data:/var/lib/postgresql/data
+      - vibe-coding-db-data:/var/lib/postgresql/data
     # コンテナ間の接続を可能にするためのネットワーク設定
     networks:
       - default
     restart: "no"
 volumes:
-  app-db-data:
+  vibe-coding-db-data:
 
 networks:
   default:

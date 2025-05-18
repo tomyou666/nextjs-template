@@ -1,0 +1,116 @@
+---
+description: 色に関するテーマ設定について
+globs: 
+alwaysApply: false
+---
+# 色に関するテーマ設定について
+
+このプロジェクトでは、`next-themes`を使用してダークモードを実装しています。
+
+## テーマプロバイダーの設定
+
+`ThemeProvider`は以下の設定で初期化されています：
+
+```tsx
+<ThemeProvider
+  attribute="class"
+  defaultTheme="system"
+  enableSystem
+  disableTransitionOnChange
+>
+  {children}
+</ThemeProvider>
+```
+
+## カラーパレットの設定
+
+カラーパレットは`globals.css`で定義されています：
+
+```css
+:root {
+  /* ライトモードのカラー */
+  --background: 228 98.65% 98.26%;
+  --foreground: 228 7.3% 0.52%;
+  /* その他のカラー... */
+}
+
+.dark {
+  /* ダークモードのカラー */
+  --background: 230 65% 3.36%;
+  --foreground: 230 10% 97.1%;
+  /* その他のカラー... */
+}
+```
+
+## カラーパレットの実装例
+
+`globals.css`で定義されているカラーパレットは以下のように使用できます：
+
+```tsx
+// プライマリーカラー
+<div className="bg-primary text-primary-foreground">
+  プライマリーコンテンツ
+</div>
+
+// セカンダリーカラー
+<div className="bg-secondary text-secondary-foreground">
+  セカンダリーコンテンツ
+</div>
+
+// アクセントカラー
+<div className="bg-accent text-accent-foreground">
+  アクセントコンテンツ
+</div>
+
+// ミュートカラー
+<div className="bg-muted text-muted-foreground">
+  ミュートコンテンツ
+</div>
+// 他の書き方はglobal.css参照
+```
+
+これらのクラスは、ライトモードとダークモードで自動的に適切な色に切り替わります。
+
+## カラーパレットの活用例
+[src/components/ui/button.tsx](mdc:src/components/ui/button.tsx)では、以下のように実装しています：
+
+```tsx
+const buttonVariants = cva(
+  'inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md font-medium text-sm transition-colors focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50',
+  {
+    variants: {
+      variant: {
+        default: 'bg-primary text-primary-foreground shadow-sm hover:bg-primary/90',
+        destructive: 'bg-destructive text-destructive-foreground shadow-xs hover:bg-destructive/90',
+        outline: 'border border-input bg-background shadow-xs hover:bg-accent hover:text-accent-foreground',
+        secondary: 'bg-secondary text-secondary-foreground shadow-xs hover:bg-secondary/80',
+        ghost: 'hover:bg-accent hover:text-accent-foreground',
+        link: 'text-primary underline-offset-4 hover:underline',
+        success: 'bg-success text-success-foreground shadow-xs hover:bg-success/90',
+        warning: 'bg-warning text-warning-foreground shadow-xs hover:bg-warning/90',
+      },
+    },
+  }
+)
+```
+
+これらのコンポーネントは、ライトモードとダークモードで自動的に適切な色に切り替わります。
+
+## 新しいコンポーネントでのダークモード対応例
+
+Tailwind CSSの`dark:`プレフィックスを使用して、ダークモード時のスタイルを定義します：
+
+```tsx
+<main className="flex-1 overflow-y-auto overflow-x-hidden bg-gray-100 dark:bg-gray-900">
+  {children}
+</main>
+```
+
+この例では：
+- ライトモード時は`bg-gray-100`（薄いグレー）
+- ダークモード時は`dark:bg-gray-900`（濃いグレー）
+を使用しています。
+
+## 主要な設定ファイル
+- [src/app/globals.css](mdc:src/app/globals.css) - ダークモードのカラーパレット設定
+- [button.tsx](mdc:src/components/ui/button.tsx) - カラーパレットの実装例

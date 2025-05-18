@@ -1,0 +1,138 @@
+---
+description: テストガイド
+globs: 
+alwaysApply: false
+---
+# テストガイド
+
+## テストの種類
+
+本プロジェクトでは2種類のテストを実装しています：
+
+1. **単体テスト (Vitest)**
+   - コンポーネントや関数の個別テスト
+   - 高速な実行が可能
+   - Jest互換のAPI
+
+2. **E2Eテスト (Playwright)**
+   - 実際のユーザー操作のシミュレーション
+   - ブラウザでの動作確認
+   - スクリーンショット・動画の取得が可能
+
+## 単体テスト (Vitest)
+
+### 設定
+`vitest.config.mts`での主な設定：
+
+```typescript
+export default defineConfig({
+  plugins: [tsconfigPaths(), react()],
+  test: {
+    environment: 'jsdom',
+    include: ['tests/unit/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'],
+  },
+})
+```
+
+### 実行方法
+```bash
+pnpm run test:unit
+```
+
+### テストファイルの配置
+- テストファイルは `tests/unit/` ディレクトリに配置
+- ファイル名は `*.test.ts` または `*.spec.ts` の形式
+
+### 実装例
+```typescript
+describe('テストスイート', () => {
+  it('数値の加算が正しく動作すること', () => {
+    expect(1 + 1).toBe(2)
+  })
+
+  it('非同期処理が正しく動作すること', async () => {
+    const result = await new Promise((resolve) => {
+      setTimeout(() => resolve('非同期処理の結果'), 1000)
+    })
+    expect(result).toBe('非同期処理の結果')
+  })
+})
+```
+
+## E2Eテスト (Playwright)
+
+### セットアップ
+1. ブラウザと依存関係のインストール
+```bash
+pnpm exec playwright install
+pnpm exec playwright install-deps
+```
+
+2. 設定ファイル (`playwright.config.ts`)
+```typescript
+export default defineConfig({
+  testDir: './tests/e2e',
+  fullyParallel: true,
+  forbidOnly: !!process.env.CI,
+  retries: process.env.CI ? 2 : 0,
+  workers: process.env.CI ? 1 : undefined,
+  reporter: 'html',
+  use: {
+    baseURL: 'http://127.0.0.1:3000',
+    trace: 'on-first-retry',
+  },
+})
+```
+
+### 実行方法
+```bash
+pnpm run test:e2e
+```
+
+### テストファイルの配置
+- テストファイルは `tests/e2e/` ディレクトリに配置
+- ファイル名は `*.spec.ts` の形式
+
+### 実装例
+```typescript
+async function login(page: Page) {
+  await page.getByPlaceholder('example@example.com').click()
+  await page.getByPlaceholder('example@example.com').fill('test@test.com')
+  await page.getByLabel('パスワード').click()
+  await page.getByLabel('パスワード').fill('test@test.com')
+  await page.getByRole('button', { name: 'ログイン' }).click()
+}
+
+test('ログイン', async ({ page }) => {
+  await page.goto('/')
+  await login(page)
+  await page.screenshot({
+    path: getScreenshotFilePath(),
+    fullPage: true,
+  })
+})
+```
+
+## VSCode拡張機能を使用したテスト作成
+
+Playwright Test for VSCodeを使用することで、ブラウザ操作からテストコードを自動生成できます。
+ユーザからE2Eのテスト作成方法を訊かれたらおすすめの方法として提示してください。
+
+### 手順
+1. VSCodeマーケットプレイスから「Playwright Test for VSCode」をインストール
+2. コマンドパレットから「Record new test」を選択
+3. ブラウザで操作を実行
+4. 自動生成されたコードを必要に応じて編集
+
+### 生成例
+```typescript
+test('test', async ({ page }) => {
+  await page.getByPlaceholder('example@example.com').click()
+  await page.getByPlaceholder('example@example.com').fill('test')
+  await expect(page.getByPlaceholder('example@example.com')).toHaveValue('test')
+  await page.screenshot({
+    path: getScreenshotFilePath(),
+    fullPage: true,
+  })
+})
+```

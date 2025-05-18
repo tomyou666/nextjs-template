@@ -5,7 +5,7 @@
 [![Next.js](https://img.shields.io/badge/Next.js-15-black?style=flat&logo=next.js)](https://Next.js.org/)
 [![Prisma](https://img.shields.io/badge/Prisma-6-2D3748?style=flat&logo=prisma)](https://www.prisma.io/)
 [![TanStack Query](https://img.shields.io/badge/TanStack_Query-5-FF4154?style=flat&logo=react-query)](https://tanstack.com/query)
-[![Tailwindcss](https://img.shields.io/badge/tailwindcss-3-38BDF8?style=flat&logo=tailwindcss)](https://tailwindcss.com/)
+[![Tailwindcss](https://img.shields.io/badge/tailwindcss-4-38BDF8?style=flat&logo=tailwindcss)](https://tailwindcss.com/)
 [![NextAuth](https://img.shields.io/badge/NextAuth-4-FF4154?style=flat&logo=nextauth)](https://next-auth.js.org/)
 
 ## デプロイURL
@@ -21,8 +21,13 @@
 - [AI活用について](docs/AI活用について.md)
 - [認証について](docs/認証について.md)
 - [キャッシュとレンダリング](docs/キャッシュとレンダリング.md)
-- [マイグレーション手順](docs/マイグレーション手順.md)
+- [Prisma運用手順](docs/Prisma運用手順.md)
 - [テストについて](docs/テストについて.md)
+- [フォームについて](docs/フォームについて.md)
+- [状態管理について](docs/状態管理について.md)
+- [ダッシュボードについて](docs/ダッシュボードについて.md)
+- [エラーについて](docs/エラーについて.md)
+
 ## 🚀 プロジェクトの目的
 
 ### 1, プロジェクトテンプレート
@@ -59,7 +64,7 @@
 |------|------------|------|
 | React | 19 | フロントエンドのフレームワーク |
 | Next.js | 15 | Reactベースのフルスタックフレームワーク。バックエンドコードも書ける |
-| TailwindCSS | 3 | ユーティリティファーストのCSSフレームワーク。カスタマイズ性が高く効率的なスタイリングが可能 |
+| TailwindCSS | 4 | ユーティリティファーストのCSSフレームワーク。カスタマイズ性が高く効率的なスタイリングが可能 |
 | Prisma | 6 | 型安全なORMツール。データベース操作を直感的に行える |
 | Shadcn/UI | 3 | 再利用可能なUIコンポーネントライブラリ |
 | NextAuth | 4 | Next.js向け認証ライブラリ。JWTを使った認証やOAuthを利用した認証プロバイダーにも対応 |
@@ -149,8 +154,13 @@ ORMを使うことで以下のようなメリットがあります。
 ├── docs                     # ドキュメント
 │   ├── AI活用について.md    # AI活用について
 │   ├── 認証について.md      # 認証について
-│   ├── マイグレーション手順.md  # マイグレーションガイド
+│   ├── Prisma運用手順.md  # マイグレーションガイド
 │   ├── キャッシュとレンダリング.md # キャッシュとレンダリングガイド
+│   ├── フォームについて.md # フォームについて
+│   ├── 状態管理について.md # 状態管理について
+│   ├── ダッシュボードについて.md # ダッシュボードについて
+│   ├── エラーについて.md # エラーについて
+│   ├── テストについて.md # テストについて
 │   └── RELEASE.md           # リリースノート
 ├── logs                     # ログファイル
 ├── middleware.ts            # Next.jsミドルウェア設定
@@ -184,6 +194,7 @@ src/
 │   ├── backend/          # バックエンド関連ロジック
 │   │   └── repository/   # データアクセスレイヤー
 │   ├── frontend/         # フロントエンド関連ロジック
+│   │   ├── repository/   # データアクセスレイヤー
 │   │   └── markdown/     # マークダウンヘルプコンテンツ
 │   ├── share/            # 共有定数とスキーマ
 │   └── utils/            # ユーティリティ関数

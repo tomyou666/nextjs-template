@@ -1,0 +1,74 @@
+---
+description: データ取得・更新 ガイド
+globs: 
+alwaysApply: false
+---
+# データ取得・更新 ガイド
+
+## 概要
+TanStack Query v5のuse*フックのガイドを説明する。
+
+## 基本的な使用方法
+
+```typescript
+const { mutate, isPending, error, data } = useMutation({
+  mutationFn: (variables) => {
+    // データ更新のロジック
+    return updateData(variables)
+  },
+  onSuccess: (data, variables, context) => {
+    // 成功時の処理
+  },
+  onError: (error, variables, context) => {
+    // エラー時の処理
+  }
+})
+```
+
+## 主要なオプション
+
+- `mutationFn`: データ更新のための非同期関数
+- `onSuccess`: ミューテーション成功時のコールバック
+- `onError`: ミューテーション失敗時のコールバック
+- `onSettled`: 成功・失敗に関わらず実行されるコールバック
+
+## 実装例
+
+[ClientDemo.tsx](mdc:src/app/dashboard/rendering/ClientDemo.tsx)では、以下のように実装されています：
+
+```typescript
+const { mutate: getRandomId, isPending: isRefreshing } = useMutation({
+  mutationFn: randomRepository.getRandomId,
+  onSuccess: (newRandomId) => {
+    queryClient.setQueryData(queryKeys.random.id, newRandomId)
+  },
+})
+```
+
+## クエリキーとの連携
+
+[queryKeys.ts](mdc:src/lib/utils/queryKeys.ts)で定義されたクエリキーを使用して、キャッシュの更新を行います：
+
+```typescript
+queryClient.setQueryData(queryKeys.random.id, newRandomId)
+```
+
+## ベストプラクティス
+
+1. ミューテーション関数は純粋な関数として実装する
+2. エラーハンドリングを適切に行う
+3. 必要に応じて`onSettled`でキャッシュの無効化を行う
+4. オプティミスティックアップデートを活用する
+5. クエリやミューテーションで使用するデータアクセスレイヤの関数は全て `src/lib/frontend/*Repostiry.ts`に定義する
+
+## 注意点
+
+- ミューテーションは自動的に再試行されない
+- キャッシュの更新は明示的に行う必要がある
+- エラーハンドリングは必ず実装する
+
+## 参照ファイル一覧
+
+- [queryKeys.ts](mdc:src/lib/utils/queryKeys.ts) - クエリキーの定義
+- [ClientDemo.tsx](mdc:src/app/dashboard/rendering/ClientDemo.tsx) - useMutationの実装例
+- [randomRepository.ts](mdc:src/lib/frontend/repository/randomRepository.ts) - データアクセスレイヤの定義例

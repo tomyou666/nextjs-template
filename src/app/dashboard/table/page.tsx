@@ -52,7 +52,7 @@ import {
 	TableHeader,
 	TableRow,
 } from '@/components/ui/table'
-import { paymentRepository } from '@/lib/backend/repository/paymentRepository'
+import { paymentRepository } from '@/lib/frontend/repository/paymentRepository'
 import { tableHelpContent } from '@/lib/frontend/markdown/tableHelp'
 import { paymentSchema } from '@/lib/share/schemas'
 import { queryKeys } from '@/lib/utils/queryKeys'

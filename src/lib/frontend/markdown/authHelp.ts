@@ -18,15 +18,15 @@ Next Authは以下の特徴を持つ認証ライブラリです：
 
 \`.env\`ファイルに以下の設定が必要です：
 
-\`\`\`
+\`\`\`text
 # 必須の環境変数
 DATABASE_URL="postgresql://postgres:postgres@app-db:5432/app-postgres"
 NEXTAUTH_SECRET="VSgbSlxftr93L0DR+ZQ5L5fTVSE/sWMUEfzqodpVHsQ="
 NEXTAUTH_URL="http://localhost:3000"
 
 # GitHubプロバイダーを使用する場合
-AUTH_GITHUB_ID="client-id"
-AUTH_GITHUB_SECRET="secret-id"
+AUTH_GITHUB_ID="github_id"
+AUTH_GITHUB_SECRET="github_secret"
 \`\`\`
 
 ### GitHubプロバイダーの設定
@@ -349,7 +349,6 @@ export const GET = auth(async (req) => {
 クライアントコンポーネントでは \`useSession\` フックを使用して認証状態を取得できます:
 
 \`\`\`typescript
-// src/app/components/AuthStatus.tsx (抜粋)
 'use client'
 
 import { useSession, signOut } from 'next-auth/react'

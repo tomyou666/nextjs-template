@@ -10,7 +10,7 @@ import {
 	CardTitle,
 } from '@/components/ui/card'
 import { useToast } from '@/hooks/use-toast'
-import { LogRepository } from '@/lib/backend/repository/logRepository'
+import { LogRepository } from '@/lib/frontend/repository/logRepository'
 import { logger } from '@/lib/share/logger'
 import { queryKeys } from '@/lib/utils/queryKeys'
 import { useMutation } from '@tanstack/react-query'

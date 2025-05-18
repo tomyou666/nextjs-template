@@ -8,7 +8,7 @@ import {
 	CardHeader,
 	CardTitle,
 } from '@/components/ui/card'
-import { randomRepository } from '@/lib/backend/repository/randomRepository'
+import { randomRepository } from '@/lib/frontend/repository/randomRepository'
 import { queryKeys } from '@/lib/utils/queryKeys'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 

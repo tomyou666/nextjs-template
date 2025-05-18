@@ -1,0 +1,148 @@
+---
+description: エラー処理と通知とトーストとロギングについて
+globs: 
+alwaysApply: false
+---
+# エラー処理と通知の実装ルール
+
+## 通知システム
+
+### 1. トースト通知
+一時的な情報を非侵入的に表示する場合は、トースト通知を使用します。
+
+```typescript
+// トースト通知の実装例
+const { toast } = useToast()
+
+toast({
+  type: 'success', // 'success' | 'error' | 'warning' | 'info'
+  title: 'タイトル',
+  description: '説明文',
+  duration: 3000, // ミリ秒
+  action: <ToastAction altText="アクション">アクション</ToastAction>,
+})
+```
+
+使用場面：
+- フォーム送信の成功/失敗
+- データ保存の完了
+- 軽微なエラー
+- システム状態の変更
+
+### 2. アラート通知
+重要な情報やユーザーの注意を引く必要がある場合は、アラート通知を使用します。
+
+```typescript
+// アラート通知の実装例
+const { showAlert } = useAlertStore()
+
+showAlert('success', 'メッセージ', 3000)
+```
+
+使用場面：
+- 重要な操作の確認
+- 重大なエラー
+- システム全体への影響がある通知
+
+## エラーハンドリング
+
+### 1. エラーバウンダリ
+Next.jsのエラーバウンダリを使用して、エラーを適切に処理します。
+
+```typescript
+// error.tsx
+'use client'
+
+export default function Error({
+  error,
+  reset,
+}: {
+  error: Error & { digest?: string }
+  reset: () => void
+}) {
+  return (
+    <div className="flex flex-col items-center justify-center min-h-[400px] gap-4">
+      <h2 className="text-2xl font-bold">エラーが発生しました</h2>
+      <p className="text-muted-foreground">{error.message}</p>
+      <Button onClick={() => reset()}>再試行</Button>
+    </div>
+  )
+}
+```
+
+### 2. グローバルエラー処理
+アプリケーション全体のエラーを処理するために、`global-error.tsx`を実装します。
+
+### 3. 404エラー処理
+カスタム404ページを実装するために、`not-found.tsx`を使用します。
+
+## ログ処理
+
+### 1. ログレベル
+適切なログレベルを使用します：
+
+```typescript
+// ログレベルの使用例
+logger.trace('詳細なデバッグ情報')
+logger.debug('デバッグ情報')
+logger.info('一般的な情報')
+logger.warn('警告')
+logger.error('エラー')
+logger.fatal('致命的なエラー')
+```
+
+### 2. ログの構造化
+ログは構造化された形式で記録します：
+
+```typescript
+// 構造化ログの例
+logger.info('ユーザーアクション', {
+  userId: 123,
+  action: 'login',
+  timestamp: new Date().toISOString(),
+})
+```
+
+### 3. エラーログ
+エラー発生時は、適切なコンテキスト情報を含めて記録します：
+
+```typescript
+try {
+  // 処理
+} catch (error) {
+  logger.error('エラーが発生しました', {
+    error: error.message,
+    stack: error.stack,
+    context: {
+      // 関連するコンテキスト情報
+    }
+  })
+}
+```
+
+## 実装ガイドライン
+
+1. **エラーメッセージ**
+   - ユーザーフレンドリーなメッセージを使用
+   - 技術的な詳細はログに記録
+   - エラーの原因と対処方法を明確に
+
+2. **通知の優先順位**
+   - トースト通知：一時的で軽微な情報
+   - アラート通知：重要な情報や確認が必要な操作
+   - エラーページ：回復不可能なエラー
+
+3. **ログの管理**
+   - 適切なログレベルを使用
+   - 機密情報は記録しない
+   - ログローテーションを設定
+
+4. **エラー回復**
+   - 可能な限り自動回復を実装
+   - ユーザーに明確な対処方法を提示
+   - 再試行メカニズムを提供
+
+## ファイル参照
+- エラー処理の実装例: [src/app/dashboard/error/page.tsx](mdc:src/app/dashboard/error/page.tsx)
+- トースト通知の実装: [src/components/ToastContainer.tsx](mdc:src/components/ToastContainer.tsx)
+- ログ設定: [src/lib/share/constants.ts](mdc:src/lib/share/constants.ts)

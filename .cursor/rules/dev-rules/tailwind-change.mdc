@@ -1,0 +1,422 @@
+---
+description: Tailwind V4 マイグレーションガイド
+globs: 
+alwaysApply: false
+---
+# Tailwind V4 マイグレーションガイド
+
+# 概要
+- TailwindはVersion3からVersion4にメジャーアップデートされました。
+- メジャーアップデートされたことにより変更点がいくつかるので下記を参考にしてください。
+- 前バージョンの書き方があれば適宜修正するようにしてください。
+
+# 変更点
+### 非推奨ユーティリティの削除
+
+v3で非推奨となり、数年間ドキュメント化されていなかったユーティリティが削除されました。削除されたものとモダンな代替手段のリストは次のとおりです：
+
+| 非推奨 | 代替手段 |
+|---------|------------|
+| `bg-opacity-*` | 不透明度修飾子（例：`bg-black/50`）を使用 |
+| `text-opacity-*` | 不透明度修飾子（例：`text-black/50`）を使用 |
+| `border-opacity-*` | 不透明度修飾子（例：`border-black/50`）を使用 |
+| `divide-opacity-*` | 不透明度修飾子（例：`divide-black/50`）を使用 |
+| `ring-opacity-*` | 不透明度修飾子（例：`ring-black/50`）を使用 |
+| `placeholder-opacity-*` | 不透明度修飾子（例：`placeholder-black/50`）を使用 |
+| `flex-shrink-*` | `shrink-*` |
+| `flex-grow-*` | `grow-*` |
+| `overflow-ellipsis` | `text-ellipsis` |
+| `decoration-slice` | `box-decoration-slice` |
+| `decoration-clone` | `box-decoration-clone` |
+
+### ユーティリティの名前変更
+
+v4では、より一貫性があり予測可能にするため、次のユーティリティの名前が変更されました：
+
+| v3 | v4 |
+|----|-----|
+| `shadow-sm` | `shadow-xs` |
+| `shadow` | `shadow-sm` |
+| `drop-shadow-sm` | `drop-shadow-xs` |
+| `drop-shadow` | `drop-shadow-sm` |
+| `blur-sm` | `blur-xs` |
+| `blur` | `blur-sm` |
+| `backdrop-blur-sm` | `backdrop-blur-xs` |
+| `backdrop-blur` | `backdrop-blur-sm` |
+| `rounded-sm` | `rounded-xs` |
+| `rounded` | `rounded-sm` |
+| `outline-none` | `outline-hidden` |
+| `ring` | `ring-3` |
+
+### シャドウ、角丸、ぼかしスケールの更新
+
+デフォルトのシャドウ、角丸、ぼかしのスケールの名前が変更され、すべてのユーティリティに名前付きの値があります。「裸の」バージョンは後方互換性のために引き続き機能しますが、それぞれの`<utility>-xs`バージョンに更新しない限り、`<utility>-sm`ユーティリティは異なって見えます。
+
+これらの変更に合わせてプロジェクトを更新するには、すべてのv3ユーティリティをv4バージョンに置き換えてください：
+
+```html
+<!-- 変更前 -->
+<input class="shadow-sm" />
+<input class="shadow" />
+
+<!-- 変更後 -->
+<input class="shadow-xs" />
+<input class="shadow-sm" />
+```
+
+### アウトラインユーティリティの名前変更
+
+アウトラインユーティリティは、ボーダーやリングユーティリティとの一貫性を高めるため、デフォルトで`outline-width: 1px`を設定するようになりました。さらに、すべての`outline-<number>`ユーティリティは`outline-style`をデフォルトで`solid`に設定するため、`outline`と組み合わせる必要がなくなりました：
+
+```html
+<!-- 変更前 -->
+<input class="outline outline-2" />
+
+<!-- 変更後 -->
+<input class="outline-2" />
+```
+
+`outline-none`ユーティリティは以前、実際には`outline-style: none`を設定せず、代わりにアクセシビリティのために強制カラーモードでも表示される不可視のアウトラインを設定していました。
+
+これをより明確にするために、このユーティリティの名前を`outline-hidden`に変更し、実際に`outline-style: none`を設定する新しい`outline-none`ユーティリティを追加しました。
+
+この変更に合わせてプロジェクトを更新するには、`outline-none`の使用をすべて`outline-hidden`に置き換えてください：
+
+```html
+<!-- 変更前 -->
+<input class="focus:outline-none" />
+
+<!-- 変更後 -->
+<input class="focus:outline-hidden" />
+```
+
+### デフォルトのリング幅とカラー
+
+`ring`ユーティリティの幅を3pxから1pxに変更し、デフォルトカラーを`blue-500`から`currentColor`に変更して、`border-*`、`divide-*`、`outline-*`ユーティリティとの一貫性を高めました。
+
+これらの変更に合わせてプロジェクトを更新するには、`ring`の使用をすべて`ring-3`に置き換えてください：
+
+```html
+<!-- 変更前 -->
+<button class="focus:ring ...">
+  <!-- ... -->
+</button>
+
+<!-- 変更後 -->
+<button class="focus:ring-3 ...">
+  <!-- ... -->
+</button>
+```
+
+次に、デフォルトのリングカラーに依存していた場所には必ず`ring-blue-500`を追加してください：
+
+```html
+<button class="focus:ring-3 focus:ring-blue-500 ...">
+  <!-- ... -->
+</button>
+```
+
+または、v3の動作を維持するために、これらのテーマ変数をCSSに追加してください：
+
+```css
+@theme {
+  --default-ring-width: 3px;
+  --default-ring-color: var(--color-blue-500);
+}
+```
+
+ただし、これらの変数は互換性のためにのみサポートされており、Tailwind CSS v4.0の慣用的な使用法とは見なされないことに注意してください。
+
+## Preflightの変更
+
+v4ではPreflightのベーススタイルにいくつかの小さな変更が加えられました：
+
+### 新しいデフォルトのプレースホルダーカラー
+
+v3では、プレースホルダーテキストはデフォルトで設定された`gray-400`カラーを使用していました。v4では、現在のテキストカラーを50%の不透明度で使用するように簡素化されました。
+
+この変更に気づかないかもしれません（プロジェクトの見た目が良くなるかもしれません）が、v3の動作を維持したい場合は、このCSSをプロジェクトに追加してください：
+
+```css
+@layer base {
+  input::placeholder,
+  textarea::placeholder {
+    color: var(--color-gray-400);
+  }
+}
+```
+
+### ボタンはデフォルトカーソルを使用
+
+ボタンは、デフォルトのブラウザ動作に合わせて、`cursor: pointer`ではなく`cursor: default`を使用するようになりました。
+
+デフォルトで`cursor: pointer`を引き続き使用したい場合は、これらのベーススタイルをCSSに追加してください：
+
+```css
+@layer base {
+  button:not(:disabled),
+  [role="button"]:not(:disabled) {
+    cursor: pointer;
+  }
+}
+```
+
+### ダイアログマージンの削除
+
+Preflightは、他の要素のリセット方法と一貫性を持たせるために、`<dialog>`要素のマージンをリセットするようになりました。
+
+ダイアログをデフォルトで中央に配置したい場合は、このCSSをプロジェクトに追加してください：
+
+```css
+@layer base {
+  dialog {
+    margin: auto;
+  }
+}
+```
+
+## プレフィックスの使用
+
+プレフィックスはバリアントのように見え、常にクラス名の先頭にあります：
+
+```html
+<div class="tw:flex tw:bg-red-500 tw:hover:bg-red-600">
+  <!-- ... -->
+</div>
+```
+
+プレフィックスを使用する場合でも、プレフィックスを使用していないかのようにテーマ変数を設定する必要があります：
+
+```css
+@import "tailwindcss" prefix(tw);
+@theme {
+  --font-display: "Satoshi", "sans-serif";
+  --breakpoint-3xl: 120rem;
+  --color-avocado-100: oklch(0.99 0 0);
+  --color-avocado-200: oklch(0.98 0.04 113.22);
+  --color-avocado-300: oklch(0.94 0.11 115.03);
+  /* ... */
+}
+```
+
+生成されるCSS変数には、プロジェクト内の既存の変数との競合を避けるためにプレフィックスが含まれます：
+
+```css
+:root {
+  --tw-font-display: "Satoshi", "sans-serif";
+  --tw-breakpoint-3xl: 120rem;
+  --tw-color-avocado-100: oklch(0.99 0 0);
+  --tw-color-avocado-200: oklch(0.98 0.04 113.22);
+  --tw-color-avocado-300: oklch(0.94 0.11 115.03);
+  /* ... */
+}
+```
+
+## カスタムユーティリティの追加
+
+v3では、`@layer utilities`または`@layer components`内で定義したカスタムクラスはTailwindによって真のユーティリティクラスとして認識され、`hover`、`focus`、`lg`などのバリアントと自動的に連携しました。違いは`@layer components`が生成されたスタイルシートで常に最初に来ることでした。
+
+v4ではネイティブのカスケードレイヤーを使用し、`@layer`アットルールをハイジャックしなくなったため、代わりに`@utility` APIが導入されました：
+
+```css
+/* 変更前 */
+@layer utilities {
+  .tab-4 {
+    tab-size: 4;
+  }
+}
+
+/* 変更後 */
+@utility tab-4 {
+  tab-size: 4;
+}
+```
+
+カスタムユーティリティは、定義するプロパティの数に基づいてソートされるようになりました。これにより、この`.btn`のようなコンポーネントユーティリティは、追加設定なしに他のTailwindユーティリティによって上書きできるようになりました：
+
+```css
+/* 変更前 */
+@layer components {
+  .btn {
+    border-radius: 0.5rem;
+    padding: 0.5rem 1rem;
+    background-color: ButtonFace;
+  }
+}
+
+/* 変更後 */
+@utility btn {
+  border-radius: 0.5rem;
+  padding: 0.5rem 1rem;
+  background-color: ButtonFace;
+}
+```
+
+カスタムユーティリティの登録について詳しくは、カスタムユーティリティの追加に関するドキュメントを参照してください。
+
+## バリアントの積み重ね順序
+
+v3では、積み重ねられたバリアントは右から左へ適用されていましたが、v4ではCSSの構文に似せるため、左から右へ適用するように更新されました。
+
+この変更に合わせてプロジェクトを更新するには、プロジェクト内の順序に依存する積み重ねられたバリアントの順序を逆にしてください：
+
+```html
+<!-- 変更前 -->
+<ul class="py-4 first:*:pt-0 last:*:pb-0">
+  <li>One</li>
+  <li>Two</li>
+  <li>Three</li>
+</ul>
+
+<!-- 変更後 -->
+<ul class="py-4 *:first:pt-0 *:last:pb-0">
+  <li>One</li>
+  <li>Two</li>
+  <li>Three</li>
+</ul>
+```
+
+これらがある場合でも、おそらくごくわずかです。直接の子バリアント（`*`）や、タイポグラフィプラグインのバリアント（`prose-headings`）が最も使用している可能性が高いものであり、それらが他のバリアントと積み重ねられている場合のみです。
+
+## 任意値での変数
+
+v3では、`var()`なしでCSSの変数を任意の値として使用できましたが、最近のCSSの更新により、これが多くの場合曖昧になる可能性があるため、v4では角括弧の代わりに丸括弧を使用するように構文が変更されました。
+
+この変更に合わせてプロジェクトを更新するには、古い変数ショートハンド構文の使用を新しい変数ショートハンド構文に置き換えてください：
+
+```html
+<!-- 変更前 -->
+<div class="bg-[--brand-color]"></div>
+
+<!-- 変更後 -->
+<div class="bg-(--brand-color)"></div>
+```
+
+## モバイルでのホバースタイル
+
+v4では、プライマリ入力デバイスがホバーをサポートする場合にのみ適用されるように、`hover`バリアントが更新されました：
+
+```css
+@media (hover: hover) {
+  .hover\:underline:hover {
+    text-decoration: underline;
+  }
+}
+```
+
+これにより、タップでホバーをトリガーするタッチデバイスに依存するように構築されたサイトで問題が発生する可能性があります。これが問題となる場合は、古い実装を使用する独自のバリアントで`hover`バリアントをオーバーライドできます：
+
+```css
+@custom-variant hover (&:hover);
+```
+
+一般的には、タッチデバイスには真の「ホバー」機能がないため、ホバー機能を強化機能として扱い、サイトの動作に依存しないことをお勧めします。
+
+## アウトラインカラーの遷移
+
+`transition`および`transition-color`ユーティリティに`outline-color`プロパティが含まれるようになりました。
+
+これは、フォーカス時にカスタムカラーでアウトラインを追加していた場合、デフォルトカラーからカラーが遷移するのが見えることを意味します。これを避けるには、無条件でアウトラインカラーを設定するか、両方の状態で明示的に設定してください：
+
+```html
+<!-- 問題のある例 -->
+<button class="transition hover:outline-2 hover:outline-cyan-500"></button>
+
+<!-- 良い例 -->
+<button class="outline-cyan-500 transition hover:outline-2"></button>
+```
+
+## コアプラグインの無効化
+
+v3にはフレームワーク内の特定のユーティリティを完全に無効にするための`corePlugins`オプションがありましたが、v4ではサポートされなくなりました。
+
+## theme()関数の使用
+
+v4にはすべてのテーマ値のCSS変数が含まれているため、可能な限り`theme()`関数の代わりにこれらの変数を使用することをお勧めします：
+
+```css
+.my-class {
+  /* 変更前 */
+  background-color: theme(colors.red.500);
+  
+  /* 変更後 */
+  background-color: var(--color-red-500);
+}
+```
+
+`theme()`関数を引き続き使用する必要がある場合（CSS変数がサポートされていないメディアクエリなど）は、古いドット表記の代わりにCSS変数名を使用する必要があります：
+
+```css
+/* 変更前 */
+@media (width >= theme(screens.xl)) {
+  /* ... */
+}
+
+/* 変更後 */
+@media (width >= theme(--breakpoint-xl)) {
+  /* ... */
+}
+```
+
+## JavaScript設定ファイルの使用
+
+JavaScript設定ファイルは後方互換性のためにまだサポートされていますが、v4では自動的に検出されなくなりました。
+
+JavaScript設定ファイルを引き続き使用する必要がある場合は、`@config`ディレクティブを使用して明示的に読み込むことができます：
+
+```css
+@config "../../tailwind.config.js";
+```
+
+JavaScript設定ファイルの`corePlugins`、`safelist`、`separator`オプションはv4.0ではサポートされていません。
+
+## JavaScriptでのテーマ値
+
+v3では、JavaScript設定を他のJavaScriptで使用できるフラットなオブジェクトに変換できる`resolveConfig`関数をエクスポートしていました。
+
+v4では、代わりに生成するCSS変数を直接使用できることを期待して、これを削除しました。これにより、はるかに簡単になり、バンドルサイズも大幅に削減されます。
+
+たとえば、ReactのMotionライブラリでは、CSS変数の値へのアニメーションとその値からのアニメーションが可能です：
+
+```jsx
+<motion.div animate={{ backgroundColor: "var(--color-blue-500)" }} />
+```
+
+JSで解決されたCSS変数の値にアクセスする必要がある場合は、`getComputedStyle`を使用してドキュメントルートにあるテーマ変数の値を取得できます：
+
+```js
+// spaghetti.js
+let styles = getComputedStyle(document.documentElement);
+let shadow = styles.getPropertyValue("--shadow-xl");
+```
+
+## Vue、Svelte、またはCSSモジュールでの@applyの使用
+
+v4では、メインCSSファイルとは別にバンドルされるスタイルシート（CSSモジュールファイル、Vue、Svelte、Astroなどの`<style>`ブロックなど）は、他のファイルで定義されたテーマ変数、カスタムユーティリティ、カスタムバリアントにアクセスできません。
+
+これらのコンテキストでこれらの定義を利用できるようにするには、`@reference`を使用してCSSをバンドルに重複させることなくインポートします：
+
+```vue
+<template>
+  <h1>Hello world!</h1>
+</template>
+<style>
+  @reference "../../app.css";
+  h1 {
+    @apply text-2xl font-bold text-red-500;
+  }
+</style>
+```
+
+または、`@apply`を使用する代わりにCSSテーマ変数を直接使用することもできます。これにより、Tailwindがこれらのスタイルを処理する必要がなくなるため、パフォーマンスも向上します：
+
+```vue
+<template>
+  <h1>Hello world!</h1>
+</template>
+<style>
+  h1 {
+    color: var(--text-red-500);
+  }
+</style>
+```

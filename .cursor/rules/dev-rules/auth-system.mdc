@@ -1,0 +1,88 @@
+---
+description: 認証について
+globs: 
+alwaysApply: false
+---
+# 認証システムガイド
+
+## 基本構成
+
+### 必要なパッケージ
+- `next-auth`: 認証の基本機能
+- `@auth/prisma-adapter`: Prismaとの連携
+- `bcryptjs`: パスワードのハッシュ化
+
+### 環境変数
+必須の環境変数:
+```env
+DATABASE_URL="postgresql://postgres:postgres@app-db:5432/app-postgres"
+NEXTAUTH_SECRET="your-secret-key"
+NEXTAUTH_URL="http://localhost:3000"
+```
+
+## 認証の実装
+
+### 認証設定
+認証の設定は [auth.ts](mdc:src/lib/backend/auth/auth.ts) で定義されています。
+
+主な設定項目:
+- JWTセッション管理
+- GitHub OAuth認証
+- クレデンシャル認証
+- セッションコールバック
+- JWTコールバック
+
+### ミドルウェアによる保護
+[middleware.ts](mdc:src/middleware.ts) で認証が必要なルートを保護します。
+
+保護対象のルート:
+```typescript
+matcher: [
+  '/((?!api|_next/static|_next/image|favicon.ico|login|signup|$).*)',
+]
+```
+
+## 保護されたAPIの実装
+
+### APIの配置ルール
+認証が必要なAPIは `src/app/api/protected/` ディレクトリに配置する必要があります。
+
+### API認証ラッパー
+[apiAuth.ts](mdc:src/lib/backend/auth/apiAuth.ts) で保護されたAPIを実装します。
+
+使用例:
+```typescript
+// src/app/api/protected/example/route.ts
+export const GET = auth(async (req) => {
+  // 認証済みユーザーのみアクセス可能
+  return Response.json({ message: "認証済みデータ" })
+})
+```
+
+## クライアントサイドでの認証状態管理
+
+### useSessionフックの使用例
+[UserNav.tsx](mdc:src/components/UserNav.tsx) では、`useSession`フックを使用して認証状態を管理しています：
+
+```typescript
+const { data: session } = useSession()
+
+// セッション情報の使用例
+<AvatarImage
+  src={session?.user?.image || ''}
+  alt={session?.user?.name || ''}
+/>
+<p className="font-medium text-sm leading-none">
+  {session?.user?.name || 'ゲスト'}
+</p>
+<p className="text-muted-foreground text-xs leading-none">
+  {session?.user?.email || '未ログイン'}
+</p>
+```
+
+### セッション情報
+`useSession`フックから取得できる情報:
+- `session.user.name`: ユーザー名
+- `session.user.email`: メールアドレス
+- `session.user.image`: プロフィール画像
+- `session.user.id`: ユーザーID

@@ -1,0 +1,66 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+# コーディングルール
+
+## 全般的なルール
+1. `npm`ではなく`pnpm`を利用していください。
+- **shaduiはアップデートされてコンポーネントを追加するコマンドが変更されたことに注意してください。**
+```bash
+# 変更前
+pnpm dlx shadcn-ui@latest add card
+
+# 変更後
+pnpm dlx shadcn@latest add card
+```
+1. `src/app/sample/pages.tsx`などで、そのページ専用のコンポーネントの場合は直接`src/app/sample/`フォルダ配下に直接作成してください。
+2. 共通コンポーネントは`src/components/`フォルダ配下に作成してください。
+3. コンポーネントファイル名はパスカル記法で命名してください。
+4. tsファイル名はキャメル記法で命名してください。
+
+## コンポーネント設計
+
+1. コンポーネントは`src/components`ディレクトリに配置
+2. 各コンポーネントは独自のディレクトリを作成し、関連ファイルをまとめる
+3. コンポーネントのpropsはTypeScriptの型定義を必ず行う
+4. スタイリングはTailwind CSSを使用
+
+## 状態管理・クエリ・ミューテーション
+
+1. 状態管理ライブラリはZustandを使用
+2. コンポーネント固有の状態はReactのuseStateを使用
+3. クエリ・ミューテーションはTanstack Queryを使用
+
+## テスト
+
+1. ユニットテストはVitestを使用
+2. E2EテストはPlaywrightを使用
+3. テストファイルは`tests`ディレクトリに配置
+
+## データベース
+
+1. Prismaを使用したデータベース操作
+2. マイグレーションは`prisma/migrations`ディレクトリに配置
+3. スキーマは`prisma/schema.prisma`で管理
+
+## セキュリティ
+
+1. 環境変数は`.env`ファイルで管理
+2. 認証はNextAuth.jsを使用
+3. パスワードはbcryptjsでハッシュ化
+
+## 詳細なルール
+- 認証に関しての共通の認識事項は [auth-system.mdc](mdc:.cursor/rules/dev-rules/auth-system.mdc) を参照してください。
+- テストに関しての共通の認識事項は [testing.mdc](mdc:.cursor/rules/dev-rules/testing.mdc) を参照してください。
+
+### フロントエンド
+- ダッシュボードに新規項目を実装する場合は [dashboard-rules.mdc](mdc:.cursor/rules/dev-rules/dashboard-rules.mdc) を参照してください。
+- nextjsのレンダリング、キャッシュ戦略に関連する実装を行う場合は [caching-rendering-rules.mdc](mdc:.cursor/rules/dev-rules/caching-rendering-rules.mdc) を参照してください。
+- コンポーネントのカラーを記載するの際のカラーテーマについての共通の認識事項は [color-theme.mdc](mdc:.cursor/rules/dev-rules/color-theme.mdc) を参照してください。
+- エラーハンドリングと通知とトーストとロギングについての共通の認識事項は [error-handling-rules.mdc](mdc:.cursor/rules/dev-rules/error-handling-rules.mdc) を参照してください。
+- フロントサンドのクエリやミューテーションの実装を行う場合は [query-mutation.mdc](mdc:.cursor/rules/dev-rules/query-mutation.mdc) を参照してください。
+- 状態管理についての共通の認識事項は [state-management.mdc](mdc:.cursor/rules/dev-rules/state-management.mdc) を参照してください。
+- アイコンに関しての共通の認識事項は [icon-usage.mdc](mdc:.cursor/rules/dev-rules/icon-usage.mdc) を参照してください。
+- tailwindはバージョン3から4にメジャーアップデートされたことで多数の変更点があるため、[tailwind-change.mdc](mdc:.cursor/rules/dev-rules/tailwind-change.mdc) を参考にしてください。

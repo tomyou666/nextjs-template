@@ -1,0 +1,111 @@
+---
+description: ダッシュボード実装ルール
+globs: 
+alwaysApply: false
+---
+# ダッシュボード実装ルール
+
+## ディレクトリ構造
+ダッシュボード関連のファイルは以下のディレクトリに配置する必要があります：
+
+- ページコンポーネント: `src/app/dashboard/`
+- 共通コンポーネント: `src/components/`
+- ルート定義: `src/lib/share/constants.ts`
+
+## ルート定義
+新しいダッシュボードページを追加する際は、必ず`src/lib/share/constants.ts`の`ROUTES`オブジェクトに追加してください：
+
+```typescript
+export const ROUTES: Routes = {
+  dashboard: {
+    path: '/dashboard',
+    label: 'ダッシュボード',
+    children: {
+      // 新しいルートを追加
+      newFeature: {
+        path: '/dashboard/new-feature',
+        label: '新機能',
+      },
+    },
+  },
+}
+```
+
+## ページコンポーネント
+ダッシュボードのページコンポーネントは以下の構造に従ってください：
+
+1. ヘッダー部分
+```typescript
+<div className="flex items-center justify-between space-y-2">
+  <h2 className="font-bold text-3xl tracking-tight">ページタイトル</h2>
+  <div className="flex-1 space-y-4 p-8 pt-6">
+    {/* ページのコンテンツ */}
+  </div>
+</div>
+```
+
+## 認証
+すべてのダッシュボードページは認証が必要です。`src/middleware.ts`で以下のように保護されていることを確認してください：
+
+```typescript
+export const config = {
+  matcher: [
+    '/dashboard/:path*',
+  ],
+}
+```
+
+## レンダリング方式
+ページの要件に応じて、適切なレンダリング方式を選択してください：
+
+1. SSR（サーバーサイドレンダリング）:
+```typescript
+export const dynamic = 'force-dynamic'
+```
+
+2. ISR（インクリメンタル静的再生成）:
+```typescript
+export const revalidate = 10 // 10秒ごとに再生成
+```
+
+## APIエンドポイント
+ダッシュボード用のAPIエンドポイントは必ず認証で保護してください：
+
+```typescript
+import { auth } from '@/lib/backend/auth/apiAuth'
+
+export const GET = auth(async (req) => {
+  // 認証済みユーザーのみアクセス可能
+  return NextResponse.json({
+    data: 'データ'
+  })
+})
+```
+
+## コンポーネント設計
+1. 再利用可能なコンポーネントは`src/components/`に配置
+2. ページ固有のコンポーネントは`src/app/dashboard/[page]/components/`に配置
+3. コンポーネントは適切な型定義を行う
+4. 必要に応じてPropsのインターフェースを定義
+
+## スタイリング
+1. Tailwind CSSを使用
+2. Tailwind V4の書き方に準拠 [tailwind-change.mdc](mdc:.cursor/rules/dev-rules/tailwind-change.mdc)
+3. 指定した色を指定する
+4. アクセシビリティに配慮
+
+## エラーハンドリング
+1. 適切なエラーメッセージを表示 [error-handling-rules.mdc](mdc:.cursor/rules/dev-rules/error-handling-rules.mdc)
+2. エラー状態のUIを実装
+3. エラーログの記録
+
+## パフォーマンス
+1. 適切なレンダリング方式の選択 [caching-rendering-rules.mdc](mdc:.cursor/rules/dev-rules/caching-rendering-rules.mdc)
+2. 不要な再レンダリングの防止
+3. 画像の最適化
+4. コード分割の活用
+
+## ファイル参照
+- ダッシュボード設定: [constants.ts](mdc:src/lib/share/constants.ts)
+- ダッシュボード例1 form: [page.tsx](mdc:src/app/dashboard/forms/page.tsx) 
+- 認証確認用ミドルウェア: [middleware.ts](mdc:src/middleware.ts)

@@ -7,7 +7,7 @@ services:
       dockerfile: Dockerfile
     # dbコンテナが起動した後に起動するように指示
     depends_on:
-      - db
+      - app-db
     volumes:
       # devcontainerのworkspacesにマウント
       - ..:/workspaces/vibe-coding:cached
@@ -15,7 +15,7 @@ services:
     command:
       /bin/sh -c "while sleep 1000; do :; done"
       /bin/bash
-  db:
+  app-db:
     container_name: vibe-coding-db
     # DB用のDockerfile指定
     build:
